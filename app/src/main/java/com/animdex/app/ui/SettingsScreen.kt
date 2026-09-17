@@ -7,7 +7,9 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -18,10 +20,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.Divider
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -105,16 +104,17 @@ fun SettingsScreen(
                         color = MaterialTheme.colorScheme.onSurface
                     )
 
-                    // 3-Segmented Pill Button
+                    // 3-Segmented Pill Button (Uniform Widths)
                     Row(
                         modifier = Modifier
+                            .width(216.dp)
+                            .height(36.dp)
                             .clip(RoundedCornerShape(24.dp))
                             .border(
                                 width = 1.dp,
                                 color = MaterialTheme.colorScheme.outlineVariant,
                                 shape = RoundedCornerShape(24.dp)
-                            )
-                            .height(36.dp),
+                            ),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         ThemeSegment(
@@ -212,7 +212,7 @@ fun SettingsScreen(
 }
 
 @Composable
-private fun ThemeSegment(
+private fun RowScope.ThemeSegment(
     label: String,
     isSelected: Boolean,
     accent: Color,
@@ -228,31 +228,18 @@ private fun ThemeSegment(
 
     Box(
         modifier = Modifier
+            .weight(1f)
+            .fillMaxHeight()
             .clip(shape)
             .background(if (isSelected) MaterialTheme.colorScheme.primaryContainer else Color.Transparent)
-            .clickable(onClick = onClick)
-            .padding(horizontal = 14.dp, vertical = 8.dp),
+            .clickable(onClick = onClick),
         contentAlignment = Alignment.Center
     ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Center
-        ) {
-            if (isSelected) {
-                Icon(
-                    imageVector = Icons.Default.Check,
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.onSurface,
-                    modifier = Modifier.size(13.dp)
-                )
-                Spacer(modifier = Modifier.width(4.dp))
-            }
-            Text(
-                text = label,
-                fontSize = 12.sp,
-                fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
-                color = if (isSelected) MaterialTheme.colorScheme.onSurface else MaterialTheme.colorScheme.onSurfaceVariant
-            )
-        }
+        Text(
+            text = label,
+            fontSize = 12.sp,
+            fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium,
+            color = if (isSelected) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.onSurfaceVariant
+        )
     }
 }
