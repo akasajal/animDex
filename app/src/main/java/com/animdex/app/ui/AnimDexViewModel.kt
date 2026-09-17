@@ -3,8 +3,6 @@ package com.animdex.app.ui
 import android.app.Application
 import android.content.Context
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.net.Uri
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
@@ -93,33 +91,6 @@ class AnimDexViewModel(application: Application) : AndroidViewModel(application)
 
     fun onImageCaptured(bitmap: Bitmap) {
         processBitmap(bitmap)
-    }
-
-    fun onGalleryImageSelected(uri: Uri) {
-        viewModelScope.launch {
-            _scanState.value = _scanState.value.copy(isAnalyzing = true, errorMessage = null)
-            try {
-                val context = getApplication<Application>()
-                val bitmap = withContext(Dispatchers.IO) {
-                    context.contentResolver.openInputStream(uri)?.use { stream ->
-                        BitmapFactory.decodeStream(stream)
-                    }
-                }
-                if (bitmap != null) {
-                    processBitmap(bitmap)
-                } else {
-                    _scanState.value = _scanState.value.copy(
-                        isAnalyzing = false,
-                        errorMessage = "Could not load image from gallery."
-                    )
-                }
-            } catch (e: Exception) {
-                _scanState.value = _scanState.value.copy(
-                    isAnalyzing = false,
-                    errorMessage = e.localizedMessage ?: "Failed to read photo."
-                )
-            }
-        }
     }
 
     private fun processBitmap(bitmap: Bitmap) {

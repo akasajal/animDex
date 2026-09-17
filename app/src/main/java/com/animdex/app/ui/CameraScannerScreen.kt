@@ -38,7 +38,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CameraAlt
-import androidx.compose.material.icons.filled.PhotoLibrary
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -76,7 +75,6 @@ fun CameraScannerScreen(
     selectedMode: ClassifierMode,
     onModeSelected: (ClassifierMode) -> Unit,
     onImageCaptured: (Bitmap) -> Unit,
-    onGalleryImageSelected: (android.net.Uri) -> Unit,
     isAnalyzing: Boolean
 ) {
     val context = LocalContext.current
@@ -96,12 +94,6 @@ fun CameraScannerScreen(
         contract = ActivityResultContracts.RequestPermission()
     ) { isGranted ->
         hasCameraPermission = isGranted
-    }
-
-    val galleryLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.GetContent()
-    ) { uri ->
-        uri?.let { onGalleryImageSelected(it) }
     }
 
     LaunchedEffect(Unit) {
@@ -230,79 +222,57 @@ fun CameraScannerScreen(
                 }
             }
 
-            // Bottom Shutter & Gallery Controls
+            // Bottom Shutter Controls
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
                     .align(Alignment.BottomCenter)
                     .background(Color.Black.copy(alpha = 0.5f))
-                    .padding(horizontal = 32.dp, vertical = 28.dp)
+                    .padding(horizontal = 32.dp, vertical = 28.dp),
+                contentAlignment = Alignment.Center
             ) {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
+                // Shutter Button (Capture)
+                Box(
+                    modifier = Modifier
+                        .size(80.dp)
+                        .clip(CircleShape)
+                        .border(4.dp, primaryColor, CircleShape)
+                        .background(Color.White.copy(alpha = 0.2f)),
+                    contentAlignment = Alignment.Center
                 ) {
-                    // Gallery Button
                     FilledIconButton(
-                        onClick = { galleryLauncher.launch("image/*") },
-                        modifier = Modifier.size(52.dp),
+                        onClick = {
+                            if (!isAnalyzing) {
+                                imageCapture.takePicture(
+                                    cameraExecutor,
+                                    object : ImageCapture.OnImageCapturedCallback() {
+                                        override fun onCaptureSuccess(image: ImageProxy) {
+                                            val bitmap = imageProxyToBitmap(image)
+                                            image.close()
+                                            ContextCompat.getMainExecutor(context).execute {
+                                                onImageCaptured(bitmap)
+                                            }
+                                        }
+
+                                        override fun onError(exception: ImageCaptureException) {
+                                            exception.printStackTrace()
+                                        }
+                                    }
+                                )
+                            }
+                        },
+                        modifier = Modifier.size(64.dp),
                         colors = IconButtonDefaults.filledIconButtonColors(
-                            containerColor = MaterialTheme.colorScheme.surfaceVariant
+                            containerColor = primaryColor
                         )
                     ) {
                         Icon(
-                            imageVector = Icons.Default.PhotoLibrary,
-                            contentDescription = "Pick from Gallery",
-                            tint = Color.White
+                            imageVector = Icons.Default.CameraAlt,
+                            contentDescription = "Capture Animal",
+                            tint = MaterialTheme.colorScheme.onPrimary,
+                            modifier = Modifier.size(32.dp)
                         )
                     }
-
-                    // Shutter Button (Capture)
-                    Box(
-                        modifier = Modifier
-                            .size(80.dp)
-                            .clip(CircleShape)
-                            .border(4.dp, primaryColor, CircleShape)
-                            .background(Color.White.copy(alpha = 0.2f)),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        FilledIconButton(
-                            onClick = {
-                                if (!isAnalyzing) {
-                                    imageCapture.takePicture(
-                                        cameraExecutor,
-                                        object : ImageCapture.OnImageCapturedCallback() {
-                                            override fun onCaptureSuccess(image: ImageProxy) {
-                                                val bitmap = imageProxyToBitmap(image)
-                                                image.close()
-                                                ContextCompat.getMainExecutor(context).execute {
-                                                    onImageCaptured(bitmap)
-                                                }
-                                            }
-
-                                            override fun onError(exception: ImageCaptureException) {
-                                                exception.printStackTrace()
-                                            }
-                                        }
-                                    )
-                                }
-                            },
-                            modifier = Modifier.size(64.dp),
-                            colors = IconButtonDefaults.filledIconButtonColors(
-                                containerColor = primaryColor
-                            )
-                        ) {
-                            Icon(
-                                imageVector = Icons.Default.CameraAlt,
-                                contentDescription = "Capture Animal",
-                                tint = MaterialTheme.colorScheme.onPrimary,
-                                modifier = Modifier.size(32.dp)
-                            )
-                        }
-                    }
-
-                    Spacer(modifier = Modifier.size(52.dp))
                 }
             }
         } else {

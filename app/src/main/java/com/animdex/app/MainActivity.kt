@@ -136,7 +136,6 @@ class MainActivity : ComponentActivity() {
                                     selectedMode = scanState.selectedMode,
                                     onModeSelected = { mode -> viewModel.setModelMode(mode) },
                                     onImageCaptured = { bitmap -> viewModel.onImageCaptured(bitmap) },
-                                    onGalleryImageSelected = { uri -> viewModel.onGalleryImageSelected(uri) },
                                     isAnalyzing = scanState.isAnalyzing
                                 )
                             }
