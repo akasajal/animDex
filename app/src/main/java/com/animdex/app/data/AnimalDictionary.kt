@@ -1,13 +1,20 @@
 package com.animdex.app.data
 
-enum class AnimalGroup(val displayName: String, val emoji: String, val isAnimal: Boolean = true) {
-    MAMMAL("Mammal", "🐾", true),
-    BIRD("Bird", "🪶", true),
-    REPTILE("Reptile", "🦎", true),
-    AMPHIBIAN("Amphibian", "🐸", true),
-    FISH("Fish", "🐟", true),
-    INVERTEBRATE("Invertebrate", "🦋", true),
-    NOT_ANIMAL("Inanimate Object", "📦", false)
+import com.animdex.app.R
+
+enum class AnimalGroup(
+    val displayName: String,
+    val iconRes: Int,
+    val emoji: String,
+    val isAnimal: Boolean = true
+) {
+    MAMMAL("Mammal", R.drawable.ic_paw, "🐾", true),
+    BIRD("Bird", R.drawable.ic_bird, "🪶", true),
+    REPTILE("Reptile", R.drawable.ic_reptile, "🦎", true),
+    AMPHIBIAN("Amphibian", R.drawable.ic_amphibian, "🐸", true),
+    FISH("Fish", R.drawable.ic_fish, "🐟", true),
+    INVERTEBRATE("Invertebrate", R.drawable.ic_butterfly, "🦋", true),
+    NOT_ANIMAL("Inanimate Object", R.drawable.ic_inanimate, "📦", false)
 }
 
 data class ParsedSpecies(

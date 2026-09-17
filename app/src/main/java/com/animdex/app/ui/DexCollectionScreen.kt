@@ -23,6 +23,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Apps
 import androidx.compose.material.icons.filled.DeleteOutline
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
@@ -45,12 +46,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
+import com.animdex.app.R
 import com.animdex.app.data.db.AnimalEntry
 import com.animdex.app.ui.theme.CrimsonAccent
 import java.io.File
@@ -58,16 +61,17 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
-fun getGroupEmoji(groupName: String): String {
+fun getGroupIconRes(groupName: String): Int {
     return when (groupName.lowercase()) {
-        "all" -> "🌐"
-        "mammal" -> "🐾"
-        "bird" -> "🪶"
-        "reptile" -> "🦎"
-        "amphibian" -> "🐸"
-        "fish" -> "🐟"
-        "invertebrate" -> "🦋"
-        else -> "🐾"
+        "all" -> R.drawable.ic_auto_mode
+        "mammal" -> R.drawable.ic_paw
+        "bird" -> R.drawable.ic_bird
+        "reptile" -> R.drawable.ic_reptile
+        "amphibian" -> R.drawable.ic_amphibian
+        "fish" -> R.drawable.ic_fish
+        "invertebrate", "insect" -> R.drawable.ic_butterfly
+        "not_animal", "inanimate object" -> R.drawable.ic_inanimate
+        else -> R.drawable.ic_paw
     }
 }
 
@@ -128,7 +132,12 @@ fun DexCollectionScreen(
                     modifier = Modifier.padding(horizontal = 14.dp, vertical = 8.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text("🐾", fontSize = 14.sp)
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_paw),
+                        contentDescription = null,
+                        tint = primaryColor,
+                        modifier = Modifier.size(16.dp)
+                    )
                     Spacer(modifier = Modifier.width(6.dp))
                     Text(
                         text = "$totalCount Discovered",
@@ -154,10 +163,21 @@ fun DexCollectionScreen(
                     selected = isSelected,
                     onClick = { selectedFilter = filter },
                     leadingIcon = {
-                        Text(
-                            text = getGroupEmoji(filter),
-                            fontSize = 13.sp
-                        )
+                        if (filter == "All") {
+                            Icon(
+                                imageVector = Icons.Default.Apps,
+                                contentDescription = null,
+                                modifier = Modifier.size(15.dp),
+                                tint = if (isSelected) MaterialTheme.colorScheme.onPrimary else primaryColor
+                            )
+                        } else {
+                            Icon(
+                                painter = painterResource(id = getGroupIconRes(filter)),
+                                contentDescription = null,
+                                modifier = Modifier.size(15.dp),
+                                tint = if (isSelected) MaterialTheme.colorScheme.onPrimary else primaryColor
+                            )
+                        }
                     },
                     label = {
                         Text(
@@ -185,9 +205,11 @@ fun DexCollectionScreen(
                 contentAlignment = Alignment.Center
             ) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    Text(
-                        text = "🐾",
-                        fontSize = 56.sp
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_paw),
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.4f),
+                        modifier = Modifier.size(64.dp)
                     )
                     Spacer(modifier = Modifier.height(16.dp))
                     Text(
@@ -238,9 +260,11 @@ fun DexCollectionScreen(
                 ) {
                     Column {
                         Row(verticalAlignment = Alignment.CenterVertically) {
-                            Text(
-                                text = entry.groupEmoji.ifEmpty { getGroupEmoji(entry.groupName) },
-                                fontSize = 20.sp
+                            Icon(
+                                painter = painterResource(id = getGroupIconRes(entry.groupName)),
+                                contentDescription = null,
+                                tint = primaryColor,
+                                modifier = Modifier.size(22.dp)
                             )
                             Spacer(modifier = Modifier.width(8.dp))
                             Text(
@@ -370,12 +394,14 @@ private fun AnimalCard(
                         .padding(8.dp)
                 ) {
                     Box(
-                        modifier = Modifier.padding(horizontal = 6.dp, vertical = 4.dp),
+                        modifier = Modifier.padding(6.dp),
                         contentAlignment = Alignment.Center
                     ) {
-                        Text(
-                            text = entry.groupEmoji.ifEmpty { getGroupEmoji(entry.groupName) },
-                            fontSize = 13.sp
+                        Icon(
+                            painter = painterResource(id = getGroupIconRes(entry.groupName)),
+                            contentDescription = entry.groupName,
+                            tint = primaryColor,
+                            modifier = Modifier.size(14.dp)
                         )
                     }
                 }

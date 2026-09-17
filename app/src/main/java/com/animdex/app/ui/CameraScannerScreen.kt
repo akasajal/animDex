@@ -62,6 +62,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -188,9 +189,17 @@ fun CameraScannerScreen(
                         FilterChip(
                             selected = isSelected,
                             onClick = { onModeSelected(mode) },
+                            leadingIcon = {
+                                Icon(
+                                    painter = painterResource(id = mode.iconRes),
+                                    contentDescription = null,
+                                    modifier = Modifier.size(16.dp),
+                                    tint = if (isSelected) MaterialTheme.colorScheme.onPrimary else primaryColor
+                                )
+                            },
                             label = {
                                 Text(
-                                    text = "${mode.emoji} ${mode.label}",
+                                    text = mode.label,
                                     fontSize = 12.sp,
                                     fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
                                 )

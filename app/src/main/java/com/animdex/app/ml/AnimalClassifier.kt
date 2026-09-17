@@ -7,18 +7,20 @@ import com.animdex.app.data.AnimalGroup
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.tensorflow.lite.support.image.TensorImage
+import com.animdex.app.R
 import org.tensorflow.lite.task.core.BaseOptions
 import org.tensorflow.lite.task.vision.classifier.ImageClassifier
 
 enum class ClassifierMode(
     val label: String,
+    val iconRes: Int,
     val emoji: String,
     val subtitle: String
 ) {
-    AUTO("Auto-Ensemble", "⚡", "Intelligent multi-model cascade"),
-    BIRDS("Birds", "🪶", "iNaturalist (965 species)"),
-    INSECTS("Insects & Bugs", "🦋", "iNaturalist (1,022 species)"),
-    GENERAL("General Wildlife", "🐾", "Mammals, reptiles & fauna")
+    AUTO("Auto-Ensemble", R.drawable.ic_auto_mode, "⚡", "Intelligent multi-model cascade"),
+    BIRDS("Birds", R.drawable.ic_bird, "🪶", "iNaturalist (965 species)"),
+    INSECTS("Insects & Bugs", R.drawable.ic_butterfly, "🦋", "iNaturalist (1,022 species)"),
+    GENERAL("General Wildlife", R.drawable.ic_paw, "🐾", "Mammals, reptiles & fauna")
 }
 
 data class RecognitionResult(

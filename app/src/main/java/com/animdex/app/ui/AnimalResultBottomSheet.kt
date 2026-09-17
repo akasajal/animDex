@@ -38,6 +38,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -137,9 +138,11 @@ fun AnimalResultBottomSheet(
                                 verticalAlignment = Alignment.CenterVertically,
                                 modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
                             ) {
-                                Text(
-                                    text = topResult.group.emoji,
-                                    fontSize = 14.sp
+                                Icon(
+                                    painter = painterResource(id = topResult.group.iconRes),
+                                    contentDescription = null,
+                                    tint = if (isAnimal) primaryColor else GoldAccent,
+                                    modifier = Modifier.size(14.dp)
                                 )
                                 Spacer(modifier = Modifier.width(6.dp))
                                 Text(
@@ -269,9 +272,11 @@ fun AnimalResultBottomSheet(
                         ) {
                             Column {
                                 Row(verticalAlignment = Alignment.CenterVertically) {
-                                    Text(
-                                        text = alt.group.emoji,
-                                        fontSize = 13.sp
+                                    Icon(
+                                        painter = painterResource(id = alt.group.iconRes),
+                                        contentDescription = null,
+                                        tint = if (alt.isAnimal) primaryColor else MaterialTheme.colorScheme.onSurfaceVariant,
+                                        modifier = Modifier.size(14.dp)
                                     )
                                     Spacer(modifier = Modifier.width(6.dp))
                                     Text(
