@@ -61,9 +61,6 @@ import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.animdex.app.data.db.AnimalEntry
 import com.animdex.app.ui.theme.CrimsonAccent
-import com.animdex.app.ui.theme.DarkSurfaceVariant
-import com.animdex.app.ui.theme.EmeraldDark
-import com.animdex.app.ui.theme.EmeraldPrimary
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -90,6 +87,7 @@ fun DexCollectionScreen(
 ) {
     var selectedFilter by remember { mutableStateOf("All") }
     var selectedEntryForDetail by remember { mutableStateOf<AnimalEntry?>(null) }
+    val primaryColor = MaterialTheme.colorScheme.primary
 
     val filterOptions = listOf("All", "Mammal", "Bird", "Reptile", "Amphibian", "Fish", "Invertebrate")
 
@@ -117,19 +115,19 @@ fun DexCollectionScreen(
                 Text(
                     text = "AnimDex",
                     style = MaterialTheme.typography.headlineLarge,
-                    color = Color.White
+                    color = MaterialTheme.colorScheme.onBackground
                 )
                 Text(
                     text = "Multi-Model ML Wildlife Catalog",
                     style = MaterialTheme.typography.bodyMedium,
-                    color = Color.Gray
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
 
             // Catch Counter Badge
             Surface(
                 shape = RoundedCornerShape(20.dp),
-                color = EmeraldDark.copy(alpha = 0.5f),
+                color = primaryColor.copy(alpha = 0.2f),
                 modifier = Modifier.padding(start = 8.dp)
             ) {
                 Row(
@@ -139,13 +137,13 @@ fun DexCollectionScreen(
                     Icon(
                         imageVector = Icons.Default.Pets,
                         contentDescription = null,
-                        tint = EmeraldPrimary,
+                        tint = primaryColor,
                         modifier = Modifier.size(16.dp)
                     )
                     Spacer(modifier = Modifier.width(6.dp))
                     Text(
                         text = "$totalCount Discovered",
-                        color = EmeraldPrimary,
+                        color = primaryColor,
                         fontWeight = FontWeight.Bold,
                         fontSize = 13.sp
                     )
@@ -171,15 +169,15 @@ fun DexCollectionScreen(
                             imageVector = getGroupIcon(filter),
                             contentDescription = null,
                             modifier = Modifier.size(16.dp),
-                            tint = if (isSelected) Color.Black else EmeraldPrimary
+                            tint = if (isSelected) MaterialTheme.colorScheme.onPrimary else primaryColor
                         )
                     },
                     label = { Text(filter) },
                     colors = FilterChipDefaults.filterChipColors(
-                        selectedContainerColor = EmeraldPrimary,
-                        selectedLabelColor = Color.Black,
-                        containerColor = DarkSurfaceVariant,
-                        labelColor = Color.LightGray
+                        selectedContainerColor = primaryColor,
+                        selectedLabelColor = MaterialTheme.colorScheme.onPrimary,
+                        containerColor = MaterialTheme.colorScheme.surfaceVariant,
+                        labelColor = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 )
             }
@@ -197,14 +195,14 @@ fun DexCollectionScreen(
                     Icon(
                         imageVector = Icons.Default.Pets,
                         contentDescription = null,
-                        tint = Color.DarkGray,
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.4f),
                         modifier = Modifier.size(64.dp)
                     )
                     Spacer(modifier = Modifier.height(16.dp))
                     Text(
                         text = if (entries.isEmpty()) "Your AnimDex is empty" else "No $selectedFilter entries",
                         style = MaterialTheme.typography.titleLarge,
-                        color = Color.LightGray
+                        color = MaterialTheme.colorScheme.onBackground
                     )
                     Spacer(modifier = Modifier.height(8.dp))
                     Text(
@@ -213,7 +211,7 @@ fun DexCollectionScreen(
                         else
                             "Scan more species with specialized models to fill this category.",
                         style = MaterialTheme.typography.bodyMedium,
-                        color = Color.Gray,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
                         textAlign = androidx.compose.ui.text.style.TextAlign.Center
                     )
                 }
@@ -251,7 +249,7 @@ fun DexCollectionScreen(
                             Icon(
                                 imageVector = getGroupIcon(entry.groupName),
                                 contentDescription = null,
-                                tint = EmeraldPrimary,
+                                tint = primaryColor,
                                 modifier = Modifier.size(20.dp)
                             )
                             Spacer(modifier = Modifier.width(8.dp))
@@ -262,7 +260,7 @@ fun DexCollectionScreen(
                                 text = entry.scientificName,
                                 fontSize = 12.sp,
                                 fontStyle = FontStyle.Italic,
-                                color = Color.Gray,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
                                 modifier = Modifier.padding(start = 28.dp, top = 2.dp)
                             )
                         }
@@ -300,14 +298,14 @@ fun DexCollectionScreen(
                         Text(
                             text = "Match: ${(entry.confidence * 100).toInt()}%",
                             fontSize = 13.sp,
-                            color = EmeraldPrimary,
+                            color = primaryColor,
                             fontWeight = FontWeight.SemiBold
                         )
                         if (entry.modelSource.isNotEmpty()) {
                             Text(
                                 text = entry.modelSource,
                                 fontSize = 11.sp,
-                                color = Color.Gray
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
                             )
                         }
                     }
@@ -315,23 +313,23 @@ fun DexCollectionScreen(
                     Text(
                         text = entry.funFact,
                         style = MaterialTheme.typography.bodyMedium,
-                        color = Color.LightGray
+                        color = MaterialTheme.colorScheme.onSurface
                     )
                     Spacer(modifier = Modifier.height(8.dp))
                     val dateFormatted = SimpleDateFormat("MMM dd, yyyy", Locale.getDefault()).format(Date(entry.timestamp))
                     Text(
                         text = "Registered: $dateFormatted",
                         fontSize = 11.sp,
-                        color = Color.Gray
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
             },
             confirmButton = {
                 TextButton(onClick = { selectedEntryForDetail = null }) {
-                    Text("Close", color = EmeraldPrimary)
+                    Text("Close", color = primaryColor)
                 }
             },
-            containerColor = DarkSurfaceVariant
+            containerColor = MaterialTheme.colorScheme.surface
         )
     }
 }
@@ -341,9 +339,11 @@ private fun AnimalCard(
     entry: AnimalEntry,
     onClick: () -> Unit
 ) {
+    val primaryColor = MaterialTheme.colorScheme.primary
+
     Card(
         shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(containerColor = DarkSurfaceVariant),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         modifier = Modifier
             .fillMaxWidth()
             .clickable(onClick = onClick)
@@ -353,7 +353,7 @@ private fun AnimalCard(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(130.dp)
-                    .background(Color.Black.copy(alpha = 0.3f))
+                    .background(Color.Black.copy(alpha = 0.15f))
             ) {
                 if (entry.photoUri.isNotEmpty()) {
                     AsyncImage(
@@ -375,7 +375,7 @@ private fun AnimalCard(
                         Icon(
                             imageVector = getGroupIcon(entry.groupName),
                             contentDescription = entry.groupName,
-                            tint = EmeraldPrimary,
+                            tint = primaryColor,
                             modifier = Modifier.size(14.dp)
                         )
                     }
@@ -387,7 +387,7 @@ private fun AnimalCard(
                     text = entry.speciesName,
                     style = MaterialTheme.typography.titleLarge,
                     fontSize = 15.sp,
-                    color = Color.White,
+                    color = MaterialTheme.colorScheme.onSurface,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
@@ -396,7 +396,7 @@ private fun AnimalCard(
                         text = entry.scientificName,
                         fontSize = 11.sp,
                         fontStyle = FontStyle.Italic,
-                        color = Color.Gray,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
                     )
@@ -408,12 +408,12 @@ private fun AnimalCard(
                 ) {
                     Text(
                         text = entry.groupName,
-                        color = Color.Gray,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
                         fontSize = 12.sp
                     )
                     Text(
                         text = "${(entry.confidence * 100).toInt()}%",
-                        color = EmeraldPrimary,
+                        color = primaryColor,
                         fontSize = 12.sp,
                         fontWeight = FontWeight.Bold
                     )

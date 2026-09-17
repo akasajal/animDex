@@ -1,9 +1,11 @@
 package com.animdex.app.ui
 
 import android.app.Application
+import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
+import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.animdex.app.data.db.AnimDexDatabase
@@ -11,6 +13,8 @@ import com.animdex.app.data.db.AnimalEntry
 import com.animdex.app.ml.AnimalClassifier
 import com.animdex.app.ml.ClassifierMode
 import com.animdex.app.ml.RecognitionResult
+import com.animdex.app.ui.theme.AccentColors
+import com.animdex.app.ui.theme.ThemeMode
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -34,9 +38,25 @@ data class ScanUiState(
 
 class AnimDexViewModel(application: Application) : AndroidViewModel(application) {
 
+    private val prefs = application.getSharedPreferences("animdex_settings", Context.MODE_PRIVATE)
+
     private val classifier = AnimalClassifier(application)
     private val database = AnimDexDatabase.getDatabase(application)
     private val animalDao = database.animalDao()
+
+    private val _themeMode = MutableStateFlow(
+        try {
+            ThemeMode.valueOf(prefs.getString("theme_mode", ThemeMode.SYSTEM.name) ?: ThemeMode.SYSTEM.name)
+        } catch (e: Exception) {
+            ThemeMode.SYSTEM
+        }
+    )
+    val themeMode: StateFlow<ThemeMode> = _themeMode.asStateFlow()
+
+    private val _accentColor = MutableStateFlow(
+        AccentColors.fromName(prefs.getString("accent_name", "Rose") ?: "Rose")
+    )
+    val accentColor: StateFlow<Color> = _accentColor.asStateFlow()
 
     private val _scanState = MutableStateFlow(ScanUiState())
     val scanState: StateFlow<ScanUiState> = _scanState.asStateFlow()
@@ -46,6 +66,17 @@ class AnimDexViewModel(application: Application) : AndroidViewModel(application)
 
     val totalCatches: StateFlow<Int> = animalDao.getEntryCount()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), 0)
+
+    fun setThemeMode(mode: ThemeMode) {
+        _themeMode.value = mode
+        prefs.edit().putString("theme_mode", mode.name).apply()
+    }
+
+    fun setAccentColor(color: Color) {
+        _accentColor.value = color
+        val name = AccentColors.nameOf(color)
+        prefs.edit().putString("accent_name", name).apply()
+    }
 
     fun setModelMode(mode: ClassifierMode) {
         _scanState.value = _scanState.value.copy(selectedMode = mode)
@@ -87,12 +118,10 @@ class AnimDexViewModel(application: Application) : AndroidViewModel(application)
             val mode = _scanState.value.selectedMode
             _scanState.value = _scanState.value.copy(isAnalyzing = true, errorMessage = null)
 
-            // Save to local cache file for thumbnail persistence
             val savedPath = withContext(Dispatchers.IO) {
                 saveBitmapToInternalStorage(bitmap)
             }
 
-            // Run Multi-Model ML inference
             val recognitionResults = classifier.classify(bitmap, mode)
 
             _scanState.value = _scanState.value.copy(

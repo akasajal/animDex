@@ -67,9 +67,6 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
 import com.animdex.app.ml.ClassifierMode
-import com.animdex.app.ui.theme.DarkSurfaceVariant
-import com.animdex.app.ui.theme.EmeraldDark
-import com.animdex.app.ui.theme.EmeraldPrimary
 import java.util.concurrent.Executors
 
 @Composable
@@ -82,6 +79,7 @@ fun CameraScannerScreen(
 ) {
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
+    val primaryColor = MaterialTheme.colorScheme.primary
 
     var hasCameraPermission by remember {
         mutableStateOf(
@@ -174,7 +172,7 @@ fun CameraScannerScreen(
                     )
                     Text(
                         text = selectedMode.subtitle,
-                        color = EmeraldPrimary,
+                        color = primaryColor,
                         fontSize = 12.sp
                     )
                 }
@@ -194,7 +192,7 @@ fun CameraScannerScreen(
                                     imageVector = mode.icon,
                                     contentDescription = null,
                                     modifier = Modifier.size(16.dp),
-                                    tint = if (isSelected) Color.Black else EmeraldPrimary
+                                    tint = if (isSelected) Color.Black else primaryColor
                                 )
                             },
                             label = {
@@ -205,9 +203,9 @@ fun CameraScannerScreen(
                                 )
                             },
                             colors = FilterChipDefaults.filterChipColors(
-                                selectedContainerColor = EmeraldPrimary,
+                                selectedContainerColor = primaryColor,
                                 selectedLabelColor = Color.Black,
-                                containerColor = DarkSurfaceVariant.copy(alpha = 0.85f),
+                                containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.85f),
                                 labelColor = Color.LightGray
                             )
                         )
@@ -215,7 +213,7 @@ fun CameraScannerScreen(
                 }
             }
 
-            // Pokédex Viewfinder Reticle Overlay
+            // Viewfinder Reticle Overlay
             Box(
                 modifier = Modifier
                     .fillMaxSize()
@@ -227,7 +225,7 @@ fun CameraScannerScreen(
                         .size(270.dp)
                         .border(
                             width = 2.dp,
-                            color = EmeraldPrimary.copy(alpha = 0.7f),
+                            color = primaryColor.copy(alpha = 0.7f),
                             shape = RoundedCornerShape(24.dp)
                         )
                 ) {
@@ -240,7 +238,7 @@ fun CameraScannerScreen(
                     ) {
                         Text(
                             text = "TARGET CREATURE",
-                            color = EmeraldPrimary,
+                            color = primaryColor,
                             fontSize = 11.sp,
                             fontWeight = FontWeight.Bold,
                             modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp)
@@ -282,7 +280,7 @@ fun CameraScannerScreen(
                         modifier = Modifier
                             .size(80.dp)
                             .clip(CircleShape)
-                            .border(4.dp, EmeraldPrimary, CircleShape)
+                            .border(4.dp, primaryColor, CircleShape)
                             .background(Color.White.copy(alpha = 0.2f)),
                         contentAlignment = Alignment.Center
                     ) {
@@ -309,13 +307,13 @@ fun CameraScannerScreen(
                             },
                             modifier = Modifier.size(64.dp),
                             colors = IconButtonDefaults.filledIconButtonColors(
-                                containerColor = EmeraldPrimary
+                                containerColor = primaryColor
                             )
                         ) {
                             Icon(
                                 imageVector = Icons.Default.CameraAlt,
                                 contentDescription = "Capture Animal",
-                                tint = Color.Black,
+                                tint = MaterialTheme.colorScheme.onPrimary,
                                 modifier = Modifier.size(32.dp)
                             )
                         }
@@ -336,20 +334,20 @@ fun CameraScannerScreen(
                 Text(
                     text = "Camera Permission Required",
                     style = MaterialTheme.typography.titleLarge,
-                    color = Color.White
+                    color = MaterialTheme.colorScheme.onBackground
                 )
                 Spacer(modifier = Modifier.height(12.dp))
                 Text(
                     text = "AnimDex needs access to your camera to recognize fauna offline using on-device ML.",
                     style = MaterialTheme.typography.bodyMedium,
-                    color = Color.Gray
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
                 Spacer(modifier = Modifier.height(24.dp))
                 Button(
                     onClick = { permissionLauncher.launch(Manifest.permission.CAMERA) },
-                    colors = ButtonDefaults.buttonColors(containerColor = EmeraldPrimary)
+                    colors = ButtonDefaults.buttonColors(containerColor = primaryColor)
                 ) {
-                    Text("Grant Permission", color = Color.Black)
+                    Text("Grant Permission", color = MaterialTheme.colorScheme.onPrimary)
                 }
             }
         }
@@ -368,7 +366,7 @@ fun CameraScannerScreen(
             ) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     CircularProgressIndicator(
-                        color = EmeraldPrimary,
+                        color = primaryColor,
                         modifier = Modifier.size(56.dp),
                         strokeWidth = 4.dp
                     )
@@ -382,7 +380,7 @@ fun CameraScannerScreen(
                     Text(
                         text = "Model: ${selectedMode.label} (${selectedMode.subtitle})",
                         style = MaterialTheme.typography.bodyMedium,
-                        color = EmeraldPrimary
+                        color = primaryColor
                     )
                 }
             }

@@ -42,9 +42,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.animdex.app.ml.RecognitionResult
-import com.animdex.app.ui.theme.DarkSurfaceVariant
-import com.animdex.app.ui.theme.EmeraldDark
-import com.animdex.app.ui.theme.EmeraldPrimary
 import com.animdex.app.ui.theme.GoldAccent
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -57,6 +54,7 @@ fun AnimalResultBottomSheet(
     onSaveToDex: (RecognitionResult) -> Unit
 ) {
     val topResult = results.firstOrNull()
+    val primaryColor = MaterialTheme.colorScheme.primary
 
     ModalBottomSheet(
         onDismissRequest = onDismiss,
@@ -79,14 +77,14 @@ fun AnimalResultBottomSheet(
                     Icon(
                         imageVector = Icons.Default.Memory,
                         contentDescription = null,
-                        tint = EmeraldPrimary,
+                        tint = primaryColor,
                         modifier = Modifier.size(20.dp)
                     )
                     Spacer(modifier = Modifier.width(8.dp))
                     Text(
                         text = "ML Classification Result",
                         style = MaterialTheme.typography.titleLarge,
-                        color = EmeraldPrimary
+                        color = primaryColor
                     )
                 }
 
@@ -94,7 +92,7 @@ fun AnimalResultBottomSheet(
                     Icon(
                         imageVector = Icons.Default.Close,
                         contentDescription = "Close",
-                        tint = Color.White
+                        tint = MaterialTheme.colorScheme.onSurface
                     )
                 }
             }
@@ -126,7 +124,7 @@ fun AnimalResultBottomSheet(
                         // Category Badge
                         Surface(
                             shape = RoundedCornerShape(8.dp),
-                            color = if (isAnimal) EmeraldDark.copy(alpha = 0.4f) else GoldAccent.copy(alpha = 0.2f),
+                            color = if (isAnimal) primaryColor.copy(alpha = 0.2f) else GoldAccent.copy(alpha = 0.2f),
                             modifier = Modifier.padding(bottom = 6.dp)
                         ) {
                             Row(
@@ -136,13 +134,13 @@ fun AnimalResultBottomSheet(
                                 Icon(
                                     imageVector = topResult.group.icon,
                                     contentDescription = null,
-                                    tint = if (isAnimal) EmeraldPrimary else GoldAccent,
+                                    tint = if (isAnimal) primaryColor else GoldAccent,
                                     modifier = Modifier.size(14.dp)
                                 )
                                 Spacer(modifier = Modifier.width(6.dp))
                                 Text(
                                     text = topResult.group.displayName,
-                                    color = if (isAnimal) EmeraldPrimary else GoldAccent,
+                                    color = if (isAnimal) primaryColor else GoldAccent,
                                     fontSize = 12.sp,
                                     fontWeight = FontWeight.SemiBold
                                 )
@@ -153,7 +151,7 @@ fun AnimalResultBottomSheet(
                         Text(
                             text = topResult.displayName,
                             style = MaterialTheme.typography.headlineMedium,
-                            color = Color.White,
+                            color = MaterialTheme.colorScheme.onSurface,
                             fontWeight = FontWeight.Bold
                         )
 
@@ -163,7 +161,7 @@ fun AnimalResultBottomSheet(
                                 text = topResult.scientificName,
                                 fontSize = 13.sp,
                                 fontStyle = FontStyle.Italic,
-                                color = Color.LightGray,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
                                 modifier = Modifier.padding(top = 2.dp)
                             )
                         }
@@ -174,7 +172,7 @@ fun AnimalResultBottomSheet(
                         val confidencePercent = (topResult.confidence * 100).toInt()
                         Text(
                             text = "$confidencePercent% Match Confidence",
-                            color = if (isAnimal && confidencePercent >= 50) EmeraldPrimary else GoldAccent,
+                            color = if (isAnimal && confidencePercent >= 50) primaryColor else GoldAccent,
                             fontSize = 12.sp,
                             fontWeight = FontWeight.Medium
                         )
@@ -185,8 +183,8 @@ fun AnimalResultBottomSheet(
                                 .fillMaxWidth()
                                 .height(6.dp)
                                 .clip(CircleShape),
-                            color = if (isAnimal) EmeraldPrimary else GoldAccent,
-                            trackColor = Color.DarkGray
+                            color = if (isAnimal) primaryColor else GoldAccent,
+                            trackColor = MaterialTheme.colorScheme.outlineVariant
                         )
                     }
                 }
@@ -196,7 +194,7 @@ fun AnimalResultBottomSheet(
                 // Model Attribution Badge
                 Surface(
                     shape = RoundedCornerShape(10.dp),
-                    color = Color.White.copy(alpha = 0.05f),
+                    color = MaterialTheme.colorScheme.surfaceVariant,
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Row(
@@ -205,12 +203,12 @@ fun AnimalResultBottomSheet(
                     ) {
                         Text(
                             text = "Model: ",
-                            color = Color.Gray,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
                             fontSize = 12.sp
                         )
                         Text(
                             text = topResult.modelSource,
-                            color = EmeraldPrimary,
+                            color = primaryColor,
                             fontWeight = FontWeight.SemiBold,
                             fontSize = 12.sp
                         )
@@ -222,7 +220,7 @@ fun AnimalResultBottomSheet(
                 // Fun Fact / Ecological Bio Card
                 Surface(
                     shape = RoundedCornerShape(16.dp),
-                    color = DarkSurfaceVariant,
+                    color = MaterialTheme.colorScheme.surfaceVariant,
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Row(
@@ -232,14 +230,14 @@ fun AnimalResultBottomSheet(
                         Icon(
                             imageVector = if (isAnimal) Icons.Default.Info else Icons.Default.WarningAmber,
                             contentDescription = "Information",
-                            tint = if (isAnimal) EmeraldPrimary else GoldAccent,
+                            tint = if (isAnimal) primaryColor else GoldAccent,
                             modifier = Modifier.size(22.dp)
                         )
                         Spacer(modifier = Modifier.width(12.dp))
                         Text(
                             text = topResult.funFact,
                             style = MaterialTheme.typography.bodyMedium,
-                            color = Color(0xFFE2E8F0),
+                            color = MaterialTheme.colorScheme.onSurface,
                             lineHeight = 20.sp
                         )
                     }
@@ -251,7 +249,7 @@ fun AnimalResultBottomSheet(
                     Text(
                         text = "Alternative Possibilities:",
                         style = MaterialTheme.typography.bodyMedium,
-                        color = Color.Gray
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                     Spacer(modifier = Modifier.height(6.dp))
                     results.drop(1).take(3).forEach { alt ->
@@ -267,20 +265,20 @@ fun AnimalResultBottomSheet(
                                     Icon(
                                         imageVector = alt.group.icon,
                                         contentDescription = null,
-                                        tint = if (alt.isAnimal) EmeraldPrimary else Color.Gray,
+                                        tint = if (alt.isAnimal) primaryColor else MaterialTheme.colorScheme.onSurfaceVariant,
                                         modifier = Modifier.size(13.dp)
                                     )
                                     Spacer(modifier = Modifier.width(6.dp))
                                     Text(
                                         text = alt.displayName,
-                                        color = if (alt.isAnimal) Color.LightGray else Color.Gray,
+                                        color = if (alt.isAnimal) MaterialTheme.colorScheme.onSurface else MaterialTheme.colorScheme.onSurfaceVariant,
                                         fontSize = 13.sp
                                     )
                                 }
                                 if (alt.scientificName.isNotEmpty()) {
                                     Text(
                                         text = alt.scientificName,
-                                        color = Color.DarkGray,
+                                        color = MaterialTheme.colorScheme.onSurfaceVariant,
                                         fontSize = 11.sp,
                                         fontStyle = FontStyle.Italic
                                     )
@@ -288,7 +286,7 @@ fun AnimalResultBottomSheet(
                             }
                             Text(
                                 text = "${(alt.confidence * 100).toInt()}%",
-                                color = Color.Gray,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
                                 fontSize = 13.sp,
                                 fontWeight = FontWeight.SemiBold
                             )
@@ -305,18 +303,18 @@ fun AnimalResultBottomSheet(
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(54.dp),
-                        colors = ButtonDefaults.buttonColors(containerColor = EmeraldPrimary),
+                        colors = ButtonDefaults.buttonColors(containerColor = primaryColor),
                         shape = RoundedCornerShape(14.dp)
                     ) {
                         Icon(
                             imageVector = Icons.Default.BookmarkAdd,
                             contentDescription = null,
-                            tint = Color.Black
+                            tint = MaterialTheme.colorScheme.onPrimary
                         )
                         Spacer(modifier = Modifier.width(8.dp))
                         Text(
                             text = "Register to AnimDex",
-                            color = Color.Black,
+                            color = MaterialTheme.colorScheme.onPrimary,
                             fontWeight = FontWeight.Bold,
                             fontSize = 16.sp
                         )
@@ -324,12 +322,12 @@ fun AnimalResultBottomSheet(
                 } else {
                     Surface(
                         shape = RoundedCornerShape(12.dp),
-                        color = Color.White.copy(alpha = 0.05f),
+                        color = MaterialTheme.colorScheme.surfaceVariant,
                         modifier = Modifier.fillMaxWidth()
                     ) {
                         Text(
                             text = "Only animal species can be registered into AnimDex. Point your camera at wildlife or switch models.",
-                            color = Color.Gray,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
                             fontSize = 13.sp,
                             modifier = Modifier.padding(14.dp),
                             textAlign = androidx.compose.ui.text.style.TextAlign.Center
@@ -347,12 +345,12 @@ fun AnimalResultBottomSheet(
                     Text(
                         text = "No subject recognized",
                         style = MaterialTheme.typography.titleLarge,
-                        color = Color.White
+                        color = MaterialTheme.colorScheme.onSurface
                     )
                     Spacer(modifier = Modifier.height(8.dp))
                     Text(
                         text = "Try snapping closer or with better lighting.",
-                        color = Color.Gray,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
                         style = MaterialTheme.typography.bodyMedium
                     )
                 }
