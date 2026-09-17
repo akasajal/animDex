@@ -58,7 +58,15 @@ class AnimDexViewModel(application: Application) : AndroidViewModel(application)
     )
     val accentColor: StateFlow<Color> = _accentColor.asStateFlow()
 
-    private val _scanState = MutableStateFlow(ScanUiState())
+    private val _scanState = MutableStateFlow(
+        ScanUiState(
+            selectedMode = try {
+                ClassifierMode.valueOf(prefs.getString("scanner_mode", ClassifierMode.AUTO.name) ?: ClassifierMode.AUTO.name)
+            } catch (e: Exception) {
+                ClassifierMode.AUTO
+            }
+        )
+    )
     val scanState: StateFlow<ScanUiState> = _scanState.asStateFlow()
 
     val entries: StateFlow<List<AnimalEntry>> = animalDao.getAllEntries()
@@ -80,6 +88,7 @@ class AnimDexViewModel(application: Application) : AndroidViewModel(application)
 
     fun setModelMode(mode: ClassifierMode) {
         _scanState.value = _scanState.value.copy(selectedMode = mode)
+        prefs.edit().putString("scanner_mode", mode.name).apply()
     }
 
     fun onImageCaptured(bitmap: Bitmap) {
