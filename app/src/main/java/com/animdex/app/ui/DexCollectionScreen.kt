@@ -22,8 +22,15 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Apps
+import androidx.compose.material.icons.filled.BugReport
+import androidx.compose.material.icons.filled.Category
 import androidx.compose.material.icons.filled.DeleteOutline
+import androidx.compose.material.icons.filled.Flight
 import androidx.compose.material.icons.filled.Pets
+import androidx.compose.material.icons.filled.Terrain
+import androidx.compose.material.icons.filled.WaterDrop
+import androidx.compose.material.icons.filled.Waves
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -44,6 +51,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -60,6 +68,19 @@ import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+
+fun getGroupIcon(groupName: String): ImageVector {
+    return when (groupName.lowercase()) {
+        "all" -> Icons.Default.Apps
+        "mammal" -> Icons.Default.Pets
+        "bird" -> Icons.Default.Flight
+        "reptile" -> Icons.Default.Terrain
+        "amphibian" -> Icons.Default.WaterDrop
+        "fish" -> Icons.Default.Waves
+        "invertebrate" -> Icons.Default.BugReport
+        else -> Icons.Default.Category
+    }
+}
 
 @Composable
 fun DexCollectionScreen(
@@ -145,6 +166,14 @@ fun DexCollectionScreen(
                 FilterChip(
                     selected = isSelected,
                     onClick = { selectedFilter = filter },
+                    leadingIcon = {
+                        Icon(
+                            imageVector = getGroupIcon(filter),
+                            contentDescription = null,
+                            modifier = Modifier.size(16.dp),
+                            tint = if (isSelected) Color.Black else EmeraldPrimary
+                        )
+                    },
                     label = { Text(filter) },
                     colors = FilterChipDefaults.filterChipColors(
                         selectedContainerColor = EmeraldPrimary,
@@ -218,13 +247,23 @@ fun DexCollectionScreen(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Column {
-                        Text(text = "${entry.groupEmoji} ${entry.speciesName}")
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Icon(
+                                imageVector = getGroupIcon(entry.groupName),
+                                contentDescription = null,
+                                tint = EmeraldPrimary,
+                                modifier = Modifier.size(20.dp)
+                            )
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Text(text = entry.speciesName)
+                        }
                         if (entry.scientificName.isNotEmpty()) {
                             Text(
                                 text = entry.scientificName,
                                 fontSize = 12.sp,
                                 fontStyle = FontStyle.Italic,
-                                color = Color.Gray
+                                color = Color.Gray,
+                                modifier = Modifier.padding(start = 28.dp, top = 2.dp)
                             )
                         }
                     }
@@ -327,16 +366,19 @@ private fun AnimalCard(
 
                 Surface(
                     shape = CircleShape,
-                    color = Color.Black.copy(alpha = 0.6f),
+                    color = Color.Black.copy(alpha = 0.65f),
                     modifier = Modifier
                         .align(Alignment.TopEnd)
                         .padding(8.dp)
                 ) {
-                    Text(
-                        text = entry.groupEmoji,
-                        modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp),
-                        fontSize = 12.sp
-                    )
+                    Box(modifier = Modifier.padding(6.dp)) {
+                        Icon(
+                            imageVector = getGroupIcon(entry.groupName),
+                            contentDescription = entry.groupName,
+                            tint = EmeraldPrimary,
+                            modifier = Modifier.size(14.dp)
+                        )
+                    }
                 }
             }
 

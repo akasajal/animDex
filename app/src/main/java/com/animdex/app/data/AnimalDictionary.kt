@@ -1,13 +1,37 @@
 package com.animdex.app.data
 
-enum class AnimalGroup(val displayName: String, val emoji: String, val isAnimal: Boolean = true) {
-    MAMMAL("Mammal", "🐾", true),
-    BIRD("Bird", "🪶", true),
-    REPTILE("Reptile", "🦎", true),
-    AMPHIBIAN("Amphibian", "🐸", true),
-    FISH("Fish", "🐟", true),
-    INVERTEBRATE("Invertebrate", "🦋", true),
-    NOT_ANIMAL("Inanimate Object", "📦", false)
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.BugReport
+import androidx.compose.material.icons.filled.Category
+import androidx.compose.material.icons.filled.Flight
+import androidx.compose.material.icons.filled.Pets
+import androidx.compose.material.icons.filled.Terrain
+import androidx.compose.material.icons.filled.WaterDrop
+import androidx.compose.material.icons.filled.Waves
+import androidx.compose.ui.graphics.vector.ImageVector
+
+enum class AnimalGroup(val displayName: String, val isAnimal: Boolean = true) {
+    MAMMAL("Mammal", true),
+    BIRD("Bird", true),
+    REPTILE("Reptile", true),
+    AMPHIBIAN("Amphibian", true),
+    FISH("Fish", true),
+    INVERTEBRATE("Invertebrate", true),
+    NOT_ANIMAL("Inanimate Object", false);
+
+    val icon: ImageVector
+        get() = when (this) {
+            MAMMAL -> Icons.Default.Pets
+            BIRD -> Icons.Default.Flight
+            REPTILE -> Icons.Default.Terrain
+            AMPHIBIAN -> Icons.Default.WaterDrop
+            FISH -> Icons.Default.Waves
+            INVERTEBRATE -> Icons.Default.BugReport
+            NOT_ANIMAL -> Icons.Default.Category
+        }
+
+    val emoji: String
+        get() = ""
 }
 
 data class ParsedSpecies(

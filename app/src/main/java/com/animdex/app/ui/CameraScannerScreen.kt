@@ -189,9 +189,17 @@ fun CameraScannerScreen(
                         FilterChip(
                             selected = isSelected,
                             onClick = { onModeSelected(mode) },
+                            leadingIcon = {
+                                Icon(
+                                    imageVector = mode.icon,
+                                    contentDescription = null,
+                                    modifier = Modifier.size(16.dp),
+                                    tint = if (isSelected) Color.Black else EmeraldPrimary
+                                )
+                            },
                             label = {
                                 Text(
-                                    text = "${mode.emoji} ${mode.label}",
+                                    text = mode.label,
                                     fontSize = 12.sp,
                                     fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
                                 )

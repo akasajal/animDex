@@ -2,6 +2,12 @@ package com.animdex.app.ml
 
 import android.content.Context
 import android.graphics.Bitmap
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AutoAwesome
+import androidx.compose.material.icons.filled.BugReport
+import androidx.compose.material.icons.filled.Flight
+import androidx.compose.material.icons.filled.Pets
+import androidx.compose.ui.graphics.vector.ImageVector
 import com.animdex.app.data.AnimalDictionary
 import com.animdex.app.data.AnimalGroup
 import kotlinx.coroutines.Dispatchers
@@ -10,11 +16,15 @@ import org.tensorflow.lite.support.image.TensorImage
 import org.tensorflow.lite.task.core.BaseOptions
 import org.tensorflow.lite.task.vision.classifier.ImageClassifier
 
-enum class ClassifierMode(val label: String, val emoji: String, val subtitle: String) {
-    AUTO("Auto-Ensemble", "⚡", "Intelligent multi-model cascade"),
-    BIRDS("Birds", "🪶", "iNaturalist (965 species)"),
-    INSECTS("Insects & Bugs", "🦋", "iNaturalist (1,022 species)"),
-    GENERAL("General Wildlife", "🐾", "Mammals, reptiles & fauna")
+enum class ClassifierMode(
+    val label: String,
+    val icon: ImageVector,
+    val subtitle: String
+) {
+    AUTO("Auto-Ensemble", Icons.Default.AutoAwesome, "Intelligent multi-model cascade"),
+    BIRDS("Birds", Icons.Default.Flight, "iNaturalist (965 species)"),
+    INSECTS("Insects & Bugs", Icons.Default.BugReport, "iNaturalist (1,022 species)"),
+    GENERAL("General Wildlife", Icons.Default.Pets, "Mammals, reptiles & fauna")
 }
 
 data class RecognitionResult(
@@ -164,16 +174,13 @@ class AnimalClassifier(private val context: Context) {
     }
 
     private fun runAutoEnsemble(tensorImage: TensorImage): List<RecognitionResult> {
-        // Step 1: Run General Classifier to evaluate subject
         val generalResults = runGeneralClassifier(tensorImage)
         val topGeneral = generalResults.firstOrNull()
 
-        // If top result is an inanimate object with good confidence, prevent false animal guesses
         if (topGeneral != null && !topGeneral.isAnimal && topGeneral.confidence >= 0.35f) {
             return generalResults
         }
 
-        // Step 2: If the top general result is an Avian/Bird, query specialized Bird model
         if (topGeneral != null && topGeneral.group == AnimalGroup.BIRD) {
             val birdResults = runBirdClassifier(tensorImage)
             if (birdResults.isNotEmpty() && birdResults.first().confidence >= 0.15f) {
@@ -181,7 +188,6 @@ class AnimalClassifier(private val context: Context) {
             }
         }
 
-        // Step 3: If the top general result is an Insect or Invertebrate, query specialized Insect model
         if (topGeneral != null && topGeneral.group == AnimalGroup.INVERTEBRATE) {
             val insectResults = runInsectClassifier(tensorImage)
             if (insectResults.isNotEmpty() && insectResults.first().confidence >= 0.15f) {
@@ -189,7 +195,6 @@ class AnimalClassifier(private val context: Context) {
             }
         }
 
-        // Step 4: Check if specialized models have extremely high confidence detection
         val topBird = runBirdClassifier(tensorImage).firstOrNull()
         val topInsect = runInsectClassifier(tensorImage).firstOrNull()
 

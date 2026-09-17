@@ -129,13 +129,24 @@ fun AnimalResultBottomSheet(
                             color = if (isAnimal) EmeraldDark.copy(alpha = 0.4f) else GoldAccent.copy(alpha = 0.2f),
                             modifier = Modifier.padding(bottom = 6.dp)
                         ) {
-                            Text(
-                                text = "${topResult.group.emoji} ${topResult.group.displayName}",
-                                color = if (isAnimal) EmeraldPrimary else GoldAccent,
-                                fontSize = 12.sp,
-                                fontWeight = FontWeight.SemiBold,
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
                                 modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
-                            )
+                            ) {
+                                Icon(
+                                    imageVector = topResult.group.icon,
+                                    contentDescription = null,
+                                    tint = if (isAnimal) EmeraldPrimary else GoldAccent,
+                                    modifier = Modifier.size(14.dp)
+                                )
+                                Spacer(modifier = Modifier.width(6.dp))
+                                Text(
+                                    text = topResult.group.displayName,
+                                    color = if (isAnimal) EmeraldPrimary else GoldAccent,
+                                    fontSize = 12.sp,
+                                    fontWeight = FontWeight.SemiBold
+                                )
+                            }
                         }
 
                         // Common Name
@@ -252,11 +263,20 @@ fun AnimalResultBottomSheet(
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             Column {
-                                Text(
-                                    text = "${alt.group.emoji} ${alt.displayName}",
-                                    color = if (alt.isAnimal) Color.LightGray else Color.Gray,
-                                    fontSize = 13.sp
-                                )
+                                Row(verticalAlignment = Alignment.CenterVertically) {
+                                    Icon(
+                                        imageVector = alt.group.icon,
+                                        contentDescription = null,
+                                        tint = if (alt.isAnimal) EmeraldPrimary else Color.Gray,
+                                        modifier = Modifier.size(13.dp)
+                                    )
+                                    Spacer(modifier = Modifier.width(6.dp))
+                                    Text(
+                                        text = alt.displayName,
+                                        color = if (alt.isAnimal) Color.LightGray else Color.Gray,
+                                        fontSize = 13.sp
+                                    )
+                                }
                                 if (alt.scientificName.isNotEmpty()) {
                                     Text(
                                         text = alt.scientificName,
