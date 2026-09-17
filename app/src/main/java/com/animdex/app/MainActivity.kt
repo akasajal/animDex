@@ -163,6 +163,8 @@ class MainActivity : ComponentActivity() {
                                 sheetState = sheetState,
                                 bitmap = scanState.scannedBitmap,
                                 results = scanState.results,
+                                isRealWildlife = scanState.isRealWildlife,
+                                spoofReason = scanState.spoofReason,
                                 onDismiss = { viewModel.dismissResultSheet() },
                                 onSaveToDex = { result ->
                                     viewModel.saveResultToDex(result)

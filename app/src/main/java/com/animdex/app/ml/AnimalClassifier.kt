@@ -47,6 +47,8 @@ class AnimalClassifier(private val context: Context) {
         insectClassifier = initClassifier("insect_classifier.tflite", maxResults = 5, threshold = 0.10f)
     }
 
+    fun getGeneralClassifier(): ImageClassifier? = generalClassifier
+
     private fun initClassifier(filename: String, maxResults: Int, threshold: Float): ImageClassifier? {
         return try {
             val baseOptions = BaseOptions.builder()

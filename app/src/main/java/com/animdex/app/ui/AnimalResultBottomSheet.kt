@@ -15,10 +15,12 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Block
 import androidx.compose.material.icons.filled.BookmarkAdd
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Info
-import androidx.compose.material.icons.filled.Memory
+import androidx.compose.material.icons.filled.Pets
+import androidx.compose.material.icons.filled.TvOff
 import androidx.compose.material.icons.filled.WarningAmber
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -52,6 +54,8 @@ fun AnimalResultBottomSheet(
     sheetState: SheetState,
     bitmap: Bitmap?,
     results: List<RecognitionResult>,
+    isRealWildlife: Boolean = true,
+    spoofReason: String? = null,
     onDismiss: () -> Unit,
     onSaveToDex: (RecognitionResult) -> Unit
 ) {
@@ -77,14 +81,14 @@ fun AnimalResultBottomSheet(
             ) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Icon(
-                        imageVector = Icons.Default.Memory,
+                        imageVector = if (isRealWildlife) Icons.Default.Pets else Icons.Default.TvOff,
                         contentDescription = null,
-                        tint = primaryColor,
+                        tint = if (isRealWildlife) primaryColor else MaterialTheme.colorScheme.error,
                         modifier = Modifier.size(20.dp)
                     )
                     Spacer(modifier = Modifier.width(8.dp))
                     Text(
-                        text = "ML Classification Result",
+                        text = if (isRealWildlife) "Species Identification" else "Unverified Capture",
                         style = MaterialTheme.typography.titleLarge,
                         color = MaterialTheme.colorScheme.onSurface,
                         fontWeight = FontWeight.Bold
@@ -101,6 +105,46 @@ fun AnimalResultBottomSheet(
             }
 
             Spacer(modifier = Modifier.height(16.dp))
+
+            // Anti-spoofing alert banner when screen/photo is detected
+            if (!isRealWildlife) {
+                Surface(
+                    shape = RoundedCornerShape(14.dp),
+                    color = MaterialTheme.colorScheme.errorContainer.copy(alpha = 0.7f),
+                    border = BorderStroke(1.dp, MaterialTheme.colorScheme.error.copy(alpha = 0.5f)),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 16.dp)
+                ) {
+                    Row(
+                        modifier = Modifier.padding(14.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.TvOff,
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.error,
+                            modifier = Modifier.size(24.dp)
+                        )
+                        Spacer(modifier = Modifier.width(12.dp))
+                        Column {
+                            Text(
+                                text = "Screen or Photo Detected",
+                                fontWeight = FontWeight.Bold,
+                                color = MaterialTheme.colorScheme.onErrorContainer,
+                                fontSize = 14.sp
+                            )
+                            Spacer(modifier = Modifier.height(2.dp))
+                            Text(
+                                text = spoofReason ?: "Captures from digital monitors, phone screens, or physical prints cannot be registered. AnimDex requires real live wildlife in nature.",
+                                color = MaterialTheme.colorScheme.onErrorContainer.copy(alpha = 0.85f),
+                                fontSize = 12.sp,
+                                lineHeight = 16.sp
+                            )
+                        }
+                    }
+                }
+            }
 
             if (topResult != null) {
                 val isAnimal = topResult.isAnimal
@@ -198,7 +242,7 @@ fun AnimalResultBottomSheet(
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                // Model Attribution Badge
+                // Catalog Engine Attribution Badge
                 Surface(
                     shape = RoundedCornerShape(10.dp),
                     color = MaterialTheme.colorScheme.surfaceVariant,
@@ -210,7 +254,7 @@ fun AnimalResultBottomSheet(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Text(
-                            text = "Model: ",
+                            text = "Catalog Engine: ",
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                             fontSize = 12.sp
                         )
@@ -307,8 +351,48 @@ fun AnimalResultBottomSheet(
 
                 Spacer(modifier = Modifier.height(20.dp))
 
-                // Register into AnimDex Button
-                if (isAnimal) {
+                // Register into AnimDex Button / Anti-Spoofing Guard
+                if (!isRealWildlife) {
+                    Column(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Surface(
+                            shape = RoundedCornerShape(14.dp),
+                            color = MaterialTheme.colorScheme.surfaceVariant,
+                            border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            Row(
+                                modifier = Modifier.padding(14.dp),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.Center
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.Block,
+                                    contentDescription = null,
+                                    tint = MaterialTheme.colorScheme.error,
+                                    modifier = Modifier.size(20.dp)
+                                )
+                                Spacer(modifier = Modifier.width(8.dp))
+                                Text(
+                                    text = "Registration Locked (Screen / Print)",
+                                    color = MaterialTheme.colorScheme.onSurface,
+                                    fontWeight = FontWeight.Bold,
+                                    fontSize = 15.sp
+                                )
+                            }
+                        }
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Text(
+                            text = "Explore outdoors and capture live wildlife in nature to add discoveries to your AnimDex.",
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            fontSize = 12.sp,
+                            textAlign = androidx.compose.ui.text.style.TextAlign.Center,
+                            modifier = Modifier.padding(horizontal = 16.dp)
+                        )
+                    }
+                } else if (isAnimal) {
                     Button(
                         onClick = { onSaveToDex(topResult) },
                         modifier = Modifier

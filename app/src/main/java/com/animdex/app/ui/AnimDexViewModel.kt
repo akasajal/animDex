@@ -11,6 +11,7 @@ import com.animdex.app.data.db.AnimalEntry
 import com.animdex.app.ml.AnimalClassifier
 import com.animdex.app.ml.ClassifierMode
 import com.animdex.app.ml.RecognitionResult
+import com.animdex.app.ml.ScreenPhotoDetector
 import com.animdex.app.ui.theme.AccentColors
 import com.animdex.app.ui.theme.ThemeMode
 import kotlinx.coroutines.Dispatchers
@@ -31,7 +32,9 @@ data class ScanUiState(
     val results: List<RecognitionResult> = emptyList(),
     val showResultSheet: Boolean = false,
     val selectedMode: ClassifierMode = ClassifierMode.AUTO,
-    val errorMessage: String? = null
+    val errorMessage: String? = null,
+    val isRealWildlife: Boolean = true,
+    val spoofReason: String? = null
 )
 
 class AnimDexViewModel(application: Application) : AndroidViewModel(application) {
@@ -102,6 +105,11 @@ class AnimDexViewModel(application: Application) : AndroidViewModel(application)
                 saveBitmapToInternalStorage(bitmap)
             }
 
+            // Perform screen and printed photo detection
+            val liveness = withContext(Dispatchers.Default) {
+                ScreenPhotoDetector.analyze(bitmap, classifier.getGeneralClassifier())
+            }
+
             val recognitionResults = classifier.classify(bitmap, mode)
 
             _scanState.value = _scanState.value.copy(
@@ -109,6 +117,8 @@ class AnimDexViewModel(application: Application) : AndroidViewModel(application)
                 scannedBitmap = bitmap,
                 savedImagePath = savedPath,
                 results = recognitionResults,
+                isRealWildlife = liveness.isRealWildlife,
+                spoofReason = liveness.reason,
                 showResultSheet = true
             )
         }
@@ -117,11 +127,16 @@ class AnimDexViewModel(application: Application) : AndroidViewModel(application)
     fun dismissResultSheet() {
         _scanState.value = _scanState.value.copy(
             showResultSheet = false,
-            scannedBitmap = null
+            scannedBitmap = null,
+            isRealWildlife = true,
+            spoofReason = null
         )
     }
 
     fun saveResultToDex(result: RecognitionResult) {
+        // Strict guard: Disallow registering spoofed captures from screens or printed media
+        if (!_scanState.value.isRealWildlife) return
+
         viewModelScope.launch(Dispatchers.IO) {
             val imagePath = _scanState.value.savedImagePath ?: ""
             val entry = AnimalEntry(
