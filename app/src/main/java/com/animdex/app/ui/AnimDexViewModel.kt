@@ -107,7 +107,7 @@ class AnimDexViewModel(application: Application) : AndroidViewModel(application)
 
             // Perform screen and printed photo detection
             val liveness = withContext(Dispatchers.Default) {
-                ScreenPhotoDetector.analyze(bitmap, classifier.getGeneralClassifier())
+                ScreenPhotoDetector.analyze(bitmap, classifier.getLivenessClassifier())
             }
 
             val recognitionResults = classifier.classify(bitmap, mode)

@@ -38,16 +38,19 @@ data class RecognitionResult(
 class AnimalClassifier(private val context: Context) {
 
     private var generalClassifier: ImageClassifier? = null
+    private var livenessClassifier: ImageClassifier? = null
     private var birdClassifier: ImageClassifier? = null
     private var insectClassifier: ImageClassifier? = null
 
     init {
         generalClassifier = initClassifier("animal_classifier.tflite", maxResults = 5, threshold = 0.15f)
+        livenessClassifier = initClassifier("animal_classifier.tflite", maxResults = 50, threshold = 0.015f)
         birdClassifier = initClassifier("bird_classifier.tflite", maxResults = 5, threshold = 0.10f)
         insectClassifier = initClassifier("insect_classifier.tflite", maxResults = 5, threshold = 0.10f)
     }
 
     fun getGeneralClassifier(): ImageClassifier? = generalClassifier
+    fun getLivenessClassifier(): ImageClassifier? = livenessClassifier
 
     private fun initClassifier(filename: String, maxResults: Int, threshold: Float): ImageClassifier? {
         return try {
@@ -209,9 +212,11 @@ class AnimalClassifier(private val context: Context) {
 
     fun close() {
         generalClassifier?.close()
+        livenessClassifier?.close()
         birdClassifier?.close()
         insectClassifier?.close()
         generalClassifier = null
+        livenessClassifier = null
         birdClassifier = null
         insectClassifier = null
     }
