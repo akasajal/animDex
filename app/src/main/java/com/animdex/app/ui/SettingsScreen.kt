@@ -372,7 +372,7 @@ private fun ThemeSegment(
     Box(
         modifier = Modifier
             .clip(shape)
-            .background(if (isSelected) accent.copy(alpha = 0.22f) else Color.Transparent)
+            .background(if (isSelected) MaterialTheme.colorScheme.primaryContainer else Color.Transparent)
             .clickable(onClick = onClick)
             .padding(horizontal = 14.dp, vertical = 8.dp),
         contentAlignment = Alignment.Center
@@ -393,8 +393,8 @@ private fun ThemeSegment(
             Text(
                 text = label,
                 fontSize = 12.sp,
-                fontWeight = if (isSelected) FontWeight.SemiBold else FontWeight.Normal,
-                color = MaterialTheme.colorScheme.onSurface
+                fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
+                color = if (isSelected) MaterialTheme.colorScheme.onSurface else MaterialTheme.colorScheme.onSurfaceVariant
             )
         }
     }

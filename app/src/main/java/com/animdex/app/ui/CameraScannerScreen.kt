@@ -17,6 +17,7 @@ import androidx.camera.view.PreviewView
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -192,7 +193,7 @@ fun CameraScannerScreen(
                                     imageVector = mode.icon,
                                     contentDescription = null,
                                     modifier = Modifier.size(16.dp),
-                                    tint = if (isSelected) Color.Black else primaryColor
+                                    tint = if (isSelected) MaterialTheme.colorScheme.onPrimary else primaryColor
                                 )
                             },
                             label = {
@@ -204,10 +205,11 @@ fun CameraScannerScreen(
                             },
                             colors = FilterChipDefaults.filterChipColors(
                                 selectedContainerColor = primaryColor,
-                                selectedLabelColor = Color.Black,
+                                selectedLabelColor = MaterialTheme.colorScheme.onPrimary,
                                 containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.85f),
-                                labelColor = Color.LightGray
-                            )
+                                labelColor = MaterialTheme.colorScheme.onSurface
+                            ),
+                            border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant)
                         )
                     }
                 }

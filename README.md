@@ -31,7 +31,7 @@ Instead of generic guessing or single-model limitations, AnimDex uses a **hierar
    │             │             │                    Fine-Grained Species & Binomial
    └─────────────┬─────────────┘                           │
                  ▼                                         │
-    [ Pokédex Result Card & AnimDex Persistence ] ◄────────┘
+    [ AnimDex Result Card & AnimDex Persistence ] ◄────────┘
 ```
 
 ### Bundled On-Device Models (`app/src/main/assets/`)

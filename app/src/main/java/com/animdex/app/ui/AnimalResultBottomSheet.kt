@@ -1,6 +1,7 @@
 package com.animdex.app.ui
 
 import android.graphics.Bitmap
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -84,7 +85,8 @@ fun AnimalResultBottomSheet(
                     Text(
                         text = "ML Classification Result",
                         style = MaterialTheme.typography.titleLarge,
-                        color = primaryColor
+                        color = MaterialTheme.colorScheme.onSurface,
+                        fontWeight = FontWeight.Bold
                     )
                 }
 
@@ -121,10 +123,14 @@ fun AnimalResultBottomSheet(
                     Spacer(modifier = Modifier.width(16.dp))
 
                     Column(modifier = Modifier.weight(1f)) {
-                        // Category Badge
+                        // Category Badge Pill (High Contrast)
                         Surface(
                             shape = RoundedCornerShape(8.dp),
-                            color = if (isAnimal) primaryColor.copy(alpha = 0.2f) else GoldAccent.copy(alpha = 0.2f),
+                            color = if (isAnimal) MaterialTheme.colorScheme.primaryContainer else GoldAccent.copy(alpha = 0.2f),
+                            border = BorderStroke(
+                                1.dp,
+                                if (isAnimal) primaryColor.copy(alpha = 0.35f) else GoldAccent.copy(alpha = 0.4f)
+                            ),
                             modifier = Modifier.padding(bottom = 6.dp)
                         ) {
                             Row(
@@ -140,9 +146,9 @@ fun AnimalResultBottomSheet(
                                 Spacer(modifier = Modifier.width(6.dp))
                                 Text(
                                     text = topResult.group.displayName,
-                                    color = if (isAnimal) primaryColor else GoldAccent,
+                                    color = if (isAnimal) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.onSurface,
                                     fontSize = 12.sp,
-                                    fontWeight = FontWeight.SemiBold
+                                    fontWeight = FontWeight.Bold
                                 )
                             }
                         }
@@ -155,7 +161,7 @@ fun AnimalResultBottomSheet(
                             fontWeight = FontWeight.Bold
                         )
 
-                        // Binomial Scientific Name (if available)
+                        // Binomial Scientific Name
                         if (topResult.scientificName.isNotEmpty()) {
                             Text(
                                 text = topResult.scientificName,
@@ -168,13 +174,13 @@ fun AnimalResultBottomSheet(
 
                         Spacer(modifier = Modifier.height(6.dp))
 
-                        // Confidence Match Bar
+                        // Confidence Match Bar & Percentage
                         val confidencePercent = (topResult.confidence * 100).toInt()
                         Text(
                             text = "$confidencePercent% Match Confidence",
-                            color = if (isAnimal && confidencePercent >= 50) primaryColor else GoldAccent,
+                            color = MaterialTheme.colorScheme.onSurface,
                             fontSize = 12.sp,
-                            fontWeight = FontWeight.Medium
+                            fontWeight = FontWeight.SemiBold
                         )
                         Spacer(modifier = Modifier.height(4.dp))
                         LinearProgressIndicator(
@@ -183,7 +189,7 @@ fun AnimalResultBottomSheet(
                                 .fillMaxWidth()
                                 .height(6.dp)
                                 .clip(CircleShape),
-                            color = if (isAnimal) primaryColor else GoldAccent,
+                            color = primaryColor,
                             trackColor = MaterialTheme.colorScheme.outlineVariant
                         )
                     }
@@ -195,6 +201,7 @@ fun AnimalResultBottomSheet(
                 Surface(
                     shape = RoundedCornerShape(10.dp),
                     color = MaterialTheme.colorScheme.surfaceVariant,
+                    border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Row(
@@ -208,8 +215,8 @@ fun AnimalResultBottomSheet(
                         )
                         Text(
                             text = topResult.modelSource,
-                            color = primaryColor,
-                            fontWeight = FontWeight.SemiBold,
+                            color = MaterialTheme.colorScheme.onSurface,
+                            fontWeight = FontWeight.Bold,
                             fontSize = 12.sp
                         )
                     }
@@ -217,10 +224,11 @@ fun AnimalResultBottomSheet(
 
                 Spacer(modifier = Modifier.height(14.dp))
 
-                // Fun Fact / Ecological Bio Card
+                // Fun Fact Card
                 Surface(
                     shape = RoundedCornerShape(16.dp),
                     color = MaterialTheme.colorScheme.surfaceVariant,
+                    border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Row(
@@ -249,7 +257,8 @@ fun AnimalResultBottomSheet(
                     Text(
                         text = "Alternative Possibilities:",
                         style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        fontWeight = FontWeight.Medium
                     )
                     Spacer(modifier = Modifier.height(6.dp))
                     results.drop(1).take(3).forEach { alt ->
@@ -271,8 +280,9 @@ fun AnimalResultBottomSheet(
                                     Spacer(modifier = Modifier.width(6.dp))
                                     Text(
                                         text = alt.displayName,
-                                        color = if (alt.isAnimal) MaterialTheme.colorScheme.onSurface else MaterialTheme.colorScheme.onSurfaceVariant,
-                                        fontSize = 13.sp
+                                        color = MaterialTheme.colorScheme.onSurface,
+                                        fontSize = 13.sp,
+                                        fontWeight = FontWeight.Medium
                                     )
                                 }
                                 if (alt.scientificName.isNotEmpty()) {
@@ -288,7 +298,7 @@ fun AnimalResultBottomSheet(
                                 text = "${(alt.confidence * 100).toInt()}%",
                                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                                 fontSize = 13.sp,
-                                fontWeight = FontWeight.SemiBold
+                                fontWeight = FontWeight.Bold
                             )
                         }
                     }
@@ -303,7 +313,10 @@ fun AnimalResultBottomSheet(
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(54.dp),
-                        colors = ButtonDefaults.buttonColors(containerColor = primaryColor),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = primaryColor,
+                            contentColor = MaterialTheme.colorScheme.onPrimary
+                        ),
                         shape = RoundedCornerShape(14.dp)
                     ) {
                         Icon(
@@ -323,6 +336,7 @@ fun AnimalResultBottomSheet(
                     Surface(
                         shape = RoundedCornerShape(12.dp),
                         color = MaterialTheme.colorScheme.surfaceVariant,
+                        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
                         modifier = Modifier.fillMaxWidth()
                     ) {
                         Text(

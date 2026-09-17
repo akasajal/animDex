@@ -2,6 +2,7 @@ package com.animdex.app.ui.theme
 
 import android.app.Activity
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
@@ -45,47 +46,59 @@ object AccentColors {
     fun nameOf(color: Color): String {
         return all.entries.firstOrNull { it.value == color }?.key ?: "Rose"
     }
+
+    // High-contrast text color against the accent background (WCAG contrast compliant)
+    fun onColorFor(accent: Color): Color {
+        val luminance = 0.2126f * accent.red + 0.7152f * accent.green + 0.0722f * accent.blue
+        return if (luminance > 0.48f) Color(0xFF121212) else Color.White
+    }
 }
 
 val LocalAccentColor = staticCompositionLocalOf { AccentColors.Rose }
 
-private fun darkScheme(accent: Color) = darkColorScheme(
-    primary = accent,
-    onPrimary = Color(0xFF1A1A1A),
-    primaryContainer = accent.copy(alpha = 0.2f),
-    onPrimaryContainer = accent,
-    background = Color(0xFF121212),
-    onBackground = Color(0xFFE8E0E5),
-    surface = Color(0xFF1E1E1E),
-    onSurface = Color(0xFFE8E0E5),
-    surfaceVariant = Color(0xFF2A2A2A),
-    onSurfaceVariant = Color(0xFFB0A8B0),
-    outline = Color(0xFF3A3A3A),
-    outlineVariant = Color(0xFF2E2E2E),
-    secondary = accent.copy(alpha = 0.8f),
-    onSecondary = Color(0xFF1A1A1A),
-    tertiary = accent.copy(alpha = 0.6f),
-    error = Color(0xFFCF6679),
-)
+private fun darkScheme(accent: Color): ColorScheme {
+    val onAccent = AccentColors.onColorFor(accent)
+    return darkColorScheme(
+        primary = accent,
+        onPrimary = onAccent,
+        primaryContainer = accent.copy(alpha = 0.28f),
+        onPrimaryContainer = Color(0xFFF5F5F5),
+        background = Color(0xFF121212),
+        onBackground = Color(0xFFE8E0E5),
+        surface = Color(0xFF1E1E1E),
+        onSurface = Color(0xFFE8E0E5),
+        surfaceVariant = Color(0xFF2A2A2A),
+        onSurfaceVariant = Color(0xFFB8B0B8),
+        outline = Color(0xFF444444),
+        outlineVariant = Color(0xFF333333),
+        secondary = accent.copy(alpha = 0.85f),
+        onSecondary = onAccent,
+        tertiary = accent.copy(alpha = 0.6f),
+        error = Color(0xFFCF6679),
+    )
+}
 
-private fun lightScheme(accent: Color) = lightColorScheme(
-    primary = accent,
-    onPrimary = Color.White,
-    primaryContainer = accent.copy(alpha = 0.15f),
-    onPrimaryContainer = accent,
-    background = Color(0xFFFAF8FB),
-    onBackground = Color(0xFF1A1A1A),
-    surface = Color.White,
-    onSurface = Color(0xFF1A1A1A),
-    surfaceVariant = Color(0xFFF3EFF4),
-    onSurfaceVariant = Color(0xFF6E6E6E),
-    outline = Color(0xFFDDD8DD),
-    outlineVariant = Color(0xFFEEEEEE),
-    secondary = accent.copy(alpha = 0.8f),
-    onSecondary = Color.White,
-    tertiary = accent.copy(alpha = 0.6f),
-    error = Color(0xFFB00020),
-)
+private fun lightScheme(accent: Color): ColorScheme {
+    val onAccent = AccentColors.onColorFor(accent)
+    return lightColorScheme(
+        primary = accent,
+        onPrimary = onAccent,
+        primaryContainer = accent.copy(alpha = 0.20f),
+        onPrimaryContainer = Color(0xFF1A1A1A),
+        background = Color(0xFFFAF8FB),
+        onBackground = Color(0xFF1A1A1A),
+        surface = Color.White,
+        onSurface = Color(0xFF1A1A1A),
+        surfaceVariant = Color(0xFFF0ECF1),
+        onSurfaceVariant = Color(0xFF5A5A5A),
+        outline = Color(0xFFD0C8D0),
+        outlineVariant = Color(0xFFE4DFE4),
+        secondary = accent.copy(alpha = 0.85f),
+        onSecondary = onAccent,
+        tertiary = accent.copy(alpha = 0.6f),
+        error = Color(0xFFB00020),
+    )
+}
 
 @Composable
 fun AnimDexTheme(
