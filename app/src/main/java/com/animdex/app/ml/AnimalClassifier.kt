@@ -178,32 +178,61 @@ class AnimalClassifier(private val context: Context) {
         val generalResults = runGeneralClassifier(tensorImage)
         val topGeneral = generalResults.firstOrNull()
 
-        if (topGeneral != null && !topGeneral.isAnimal && topGeneral.confidence >= 0.35f) {
+        // 1. If an inanimate object is detected with solid confidence, stop and report non-animal
+        if (topGeneral != null && !topGeneral.isAnimal && topGeneral.confidence >= 0.40f) {
+            val hasAnimalCandidate = generalResults.drop(1).any { it.isAnimal && it.confidence >= 0.25f }
+            if (!hasAnimalCandidate) {
+                return generalResults
+            }
+        }
+
+        // 2. If general classifier identifies a MAMMAL, REPTILE, AMPHIBIAN, or FISH with confidence >= 0.25:
+        // Strictly protect it from out-of-distribution hallucinations by specialized bird/insect models!
+        if (topGeneral != null && topGeneral.isAnimal &&
+            (topGeneral.group == AnimalGroup.MAMMAL ||
+             topGeneral.group == AnimalGroup.REPTILE ||
+             topGeneral.group == AnimalGroup.AMPHIBIAN ||
+             topGeneral.group == AnimalGroup.FISH) &&
+            topGeneral.confidence >= 0.25f
+        ) {
             return generalResults
         }
 
-        if (topGeneral != null && topGeneral.group == AnimalGroup.BIRD) {
+        // 3. If general classifier indicates an avian species (or any top candidate is a bird)
+        val generalSuggestsBird = generalResults.take(3).any { it.group == AnimalGroup.BIRD }
+        if (generalSuggestsBird) {
             val birdResults = runBirdClassifier(tensorImage)
-            if (birdResults.isNotEmpty() && birdResults.first().confidence >= 0.15f) {
+            if (birdResults.isNotEmpty() && birdResults.first().confidence >= 0.18f) {
                 return birdResults
             }
         }
 
-        if (topGeneral != null && topGeneral.group == AnimalGroup.INVERTEBRATE) {
+        // 4. If general classifier indicates an invertebrate/insect
+        val generalSuggestsInsect = generalResults.take(3).any { it.group == AnimalGroup.INVERTEBRATE }
+        if (generalSuggestsInsect) {
             val insectResults = runInsectClassifier(tensorImage)
-            if (insectResults.isNotEmpty() && insectResults.first().confidence >= 0.15f) {
+            if (insectResults.isNotEmpty() && insectResults.first().confidence >= 0.18f) {
                 return insectResults
             }
         }
 
+        // 5. Fallback for species missing from general model (e.g. sparrows, pigeons, dragonflies, moths)
+        // Only trigger if specialized model has high confidence (>= 0.40) and clear superiority
         val topBird = runBirdClassifier(tensorImage).firstOrNull()
         val topInsect = runInsectClassifier(tensorImage).firstOrNull()
+        val generalConf = topGeneral?.confidence ?: 0f
 
-        if (topBird != null && topBird.confidence >= 0.65f && (topGeneral == null || topBird.confidence > topGeneral.confidence)) {
+        if (topBird != null && topBird.confidence >= 0.40f &&
+            (topInsect == null || topBird.confidence >= topInsect.confidence) &&
+            topBird.confidence > generalConf * 1.15f
+        ) {
             return runBirdClassifier(tensorImage)
         }
 
-        if (topInsect != null && topInsect.confidence >= 0.65f && (topGeneral == null || topInsect.confidence > topGeneral.confidence)) {
+        if (topInsect != null && topInsect.confidence >= 0.40f &&
+            (topBird == null || topInsect.confidence >= topBird.confidence) &&
+            topInsect.confidence > generalConf * 1.15f
+        ) {
             return runInsectClassifier(tensorImage)
         }
 

@@ -342,10 +342,17 @@ private fun imageProxyToBitmap(image: ImageProxy): Bitmap {
     val bitmap = android.graphics.BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
     val rotation = image.imageInfo.rotationDegrees
 
-    return if (rotation != 0) {
+    val rotated = if (rotation != 0) {
         val matrix = Matrix().apply { postRotate(rotation.toFloat()) }
         Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
     } else {
         bitmap
     }
+
+    // Center-crop to 1:1 square matching the viewfinder "TARGET CREATURE" reticle
+    // This prevents aspect ratio squashing and eliminates background clutter outside the frame
+    val minDim = kotlin.math.min(rotated.width, rotated.height)
+    val startX = (rotated.width - minDim) / 2
+    val startY = (rotated.height - minDim) / 2
+    return Bitmap.createBitmap(rotated, startX, startY, minDim, minDim)
 }

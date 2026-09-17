@@ -167,7 +167,12 @@ object AnimalDictionary {
         "killer whale" to Pair("Orca / Killer Whale", "Orcinus orca"),
         "blue whale" to Pair("Blue Whale", "Balaenoptera musculus"),
         "humpback whale" to Pair("Humpback Whale", "Megaptera novaeangliae"),
-        "bottlenose dolphin" to Pair("Common Bottlenose Dolphin", "Tursiops truncatus")
+        "bottlenose dolphin" to Pair("Common Bottlenose Dolphin", "Tursiops truncatus"),
+        "cock" to Pair("Rooster / Cockerel", "Gallus gallus domesticus"),
+        "hen" to Pair("Hen / Chicken", "Gallus gallus domesticus"),
+        "tusker" to Pair("Wild Elephant", "Loxodonta / Elephas"),
+        "african hunting dog" to Pair("African Wild Dog", "Lycaon pictus"),
+        "hyena" to Pair("Spotted Hyena", "Crocuta crocuta")
     )
 
     fun getInfoForGeneralModel(index: Int, rawLabel: String): AnimalInfo {
