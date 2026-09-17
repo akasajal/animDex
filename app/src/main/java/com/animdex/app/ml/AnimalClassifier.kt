@@ -2,12 +2,6 @@ package com.animdex.app.ml
 
 import android.content.Context
 import android.graphics.Bitmap
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AutoAwesome
-import androidx.compose.material.icons.filled.BugReport
-import androidx.compose.material.icons.filled.Flight
-import androidx.compose.material.icons.filled.Pets
-import androidx.compose.ui.graphics.vector.ImageVector
 import com.animdex.app.data.AnimalDictionary
 import com.animdex.app.data.AnimalGroup
 import kotlinx.coroutines.Dispatchers
@@ -18,13 +12,13 @@ import org.tensorflow.lite.task.vision.classifier.ImageClassifier
 
 enum class ClassifierMode(
     val label: String,
-    val icon: ImageVector,
+    val emoji: String,
     val subtitle: String
 ) {
-    AUTO("Auto-Ensemble", Icons.Default.AutoAwesome, "Intelligent multi-model cascade"),
-    BIRDS("Birds", Icons.Default.Flight, "iNaturalist (965 species)"),
-    INSECTS("Insects & Bugs", Icons.Default.BugReport, "iNaturalist (1,022 species)"),
-    GENERAL("General Wildlife", Icons.Default.Pets, "Mammals, reptiles & fauna")
+    AUTO("Auto-Ensemble", "⚡", "Intelligent multi-model cascade"),
+    BIRDS("Birds", "🪶", "iNaturalist (965 species)"),
+    INSECTS("Insects & Bugs", "🦋", "iNaturalist (1,022 species)"),
+    GENERAL("General Wildlife", "🐾", "Mammals, reptiles & fauna")
 }
 
 data class RecognitionResult(

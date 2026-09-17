@@ -137,11 +137,9 @@ fun AnimalResultBottomSheet(
                                 verticalAlignment = Alignment.CenterVertically,
                                 modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
                             ) {
-                                Icon(
-                                    imageVector = topResult.group.icon,
-                                    contentDescription = null,
-                                    tint = if (isAnimal) primaryColor else GoldAccent,
-                                    modifier = Modifier.size(14.dp)
+                                Text(
+                                    text = topResult.group.emoji,
+                                    fontSize = 14.sp
                                 )
                                 Spacer(modifier = Modifier.width(6.dp))
                                 Text(
@@ -271,11 +269,9 @@ fun AnimalResultBottomSheet(
                         ) {
                             Column {
                                 Row(verticalAlignment = Alignment.CenterVertically) {
-                                    Icon(
-                                        imageVector = alt.group.icon,
-                                        contentDescription = null,
-                                        tint = if (alt.isAnimal) primaryColor else MaterialTheme.colorScheme.onSurfaceVariant,
-                                        modifier = Modifier.size(13.dp)
+                                    Text(
+                                        text = alt.group.emoji,
+                                        fontSize = 13.sp
                                     )
                                     Spacer(modifier = Modifier.width(6.dp))
                                     Text(
