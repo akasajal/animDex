@@ -20,9 +20,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
-import androidx.compose.material.icons.filled.Info
-import androidx.compose.material.icons.filled.Memory
-import androidx.compose.material.icons.filled.Storage
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -43,7 +40,7 @@ import com.animdex.app.ui.theme.ThemeMode
 fun SettingsScreen(
     currentThemeMode: ThemeMode,
     currentAccent: Color,
-    totalDiscoveries: Int,
+    totalDiscoveries: Int = 0,
     onThemeModeChanged: (ThemeMode) -> Unit,
     onAccentColorChanged: (Color) -> Unit
 ) {
@@ -210,146 +207,6 @@ fun SettingsScreen(
             }
         }
 
-        Spacer(modifier = Modifier.height(24.dp))
-
-        // MACHINE LEARNING SECTION
-        Surface(
-            shape = RoundedCornerShape(20.dp),
-            color = MaterialTheme.colorScheme.surface,
-            modifier = Modifier
-                .fillMaxWidth()
-                .border(
-                    width = 1.dp,
-                    color = MaterialTheme.colorScheme.outlineVariant,
-                    shape = RoundedCornerShape(20.dp)
-                )
-        ) {
-            Column(modifier = Modifier.padding(20.dp)) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Icon(
-                        imageVector = Icons.Default.Memory,
-                        contentDescription = null,
-                        tint = currentAccent,
-                        modifier = Modifier.size(16.dp)
-                    )
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Text(
-                        text = "ON-DEVICE MACHINE LEARNING",
-                        fontSize = 12.sp,
-                        fontWeight = FontWeight.Bold,
-                        letterSpacing = 1.2.sp,
-                        color = currentAccent
-                    )
-                }
-
-                Spacer(modifier = Modifier.height(16.dp))
-
-                ModelItem(
-                    title = "iNaturalist Birds Model",
-                    subtitle = "965 species with binomial Latin names",
-                    size = "3.57 MB • Active"
-                )
-                Spacer(modifier = Modifier.height(12.dp))
-                ModelItem(
-                    title = "iNaturalist Insects Model",
-                    subtitle = "1,022 invertebrate & butterfly species",
-                    size = "3.65 MB • Active"
-                )
-                Spacer(modifier = Modifier.height(12.dp))
-                ModelItem(
-                    title = "General Fauna & Wildlife Model",
-                    subtitle = "Mammals, reptiles, fish & scene evaluator",
-                    size = "4.28 MB • Active"
-                )
-            }
-        }
-
-        Spacer(modifier = Modifier.height(24.dp))
-
-        // DATA & STORAGE SECTION
-        Surface(
-            shape = RoundedCornerShape(20.dp),
-            color = MaterialTheme.colorScheme.surface,
-            modifier = Modifier
-                .fillMaxWidth()
-                .border(
-                    width = 1.dp,
-                    color = MaterialTheme.colorScheme.outlineVariant,
-                    shape = RoundedCornerShape(20.dp)
-                )
-        ) {
-            Column(modifier = Modifier.padding(20.dp)) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Icon(
-                        imageVector = Icons.Default.Storage,
-                        contentDescription = null,
-                        tint = currentAccent,
-                        modifier = Modifier.size(16.dp)
-                    )
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Text(
-                        text = "DATABASE & PRIVACY",
-                        fontSize = 12.sp,
-                        fontWeight = FontWeight.Bold,
-                        letterSpacing = 1.2.sp,
-                        color = currentAccent
-                    )
-                }
-
-                Spacer(modifier = Modifier.height(16.dp))
-
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Column {
-                        Text(
-                            text = "Registered Discoveries",
-                            style = MaterialTheme.typography.bodyLarge,
-                            color = MaterialTheme.colorScheme.onSurface
-                        )
-                        Text(
-                            text = "Stored on local Room SQLite database",
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-                    }
-                    Text(
-                        text = "$totalDiscoveries catches",
-                        color = currentAccent,
-                        fontWeight = FontWeight.Bold
-                    )
-                }
-
-                Spacer(modifier = Modifier.height(16.dp))
-
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Column {
-                        Text(
-                            text = "100% Offline & Private",
-                            style = MaterialTheme.typography.bodyLarge,
-                            color = MaterialTheme.colorScheme.onSurface
-                        )
-                        Text(
-                            text = "No images or data leave your phone",
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-                    }
-                    Icon(
-                        imageVector = Icons.Default.Info,
-                        contentDescription = null,
-                        tint = currentAccent
-                    )
-                }
-            }
-        }
-
         Spacer(modifier = Modifier.height(36.dp))
     }
 }
@@ -397,38 +254,5 @@ private fun ThemeSegment(
                 color = if (isSelected) MaterialTheme.colorScheme.onSurface else MaterialTheme.colorScheme.onSurfaceVariant
             )
         }
-    }
-}
-
-@Composable
-private fun ModelItem(
-    title: String,
-    subtitle: String,
-    size: String
-) {
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Column(modifier = Modifier.weight(1f)) {
-            Text(
-                text = title,
-                style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.onSurface,
-                fontWeight = FontWeight.Medium
-            )
-            Text(
-                text = subtitle,
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-        }
-        Spacer(modifier = Modifier.width(12.dp))
-        Text(
-            text = size,
-            fontSize = 11.sp,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
-        )
     }
 }

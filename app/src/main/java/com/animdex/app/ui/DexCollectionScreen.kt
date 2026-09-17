@@ -115,7 +115,7 @@ fun DexCollectionScreen(
                     fontWeight = FontWeight.Bold
                 )
                 Text(
-                    text = "Multi-Model ML Wildlife Catalog",
+                    text = "Wildlife catalog",
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )

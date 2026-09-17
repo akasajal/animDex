@@ -151,7 +151,7 @@ fun CameraScannerScreen(
                 }
             )
 
-            // Top Overlay: ML Model Selector Bar
+            // Top Overlay: Mode Selector Bar
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -159,26 +159,6 @@ fun CameraScannerScreen(
                     .background(Color.Black.copy(alpha = 0.55f))
                     .padding(top = 16.dp, bottom = 12.dp)
             ) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 20.dp, vertical = 4.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(
-                        text = "ML Vision Model",
-                        color = Color.White,
-                        fontSize = 14.sp,
-                        fontWeight = FontWeight.Bold
-                    )
-                    Text(
-                        text = selectedMode.subtitle,
-                        color = primaryColor,
-                        fontSize = 12.sp
-                    )
-                }
-
                 LazyRow(
                     modifier = Modifier.fillMaxWidth(),
                     contentPadding = PaddingValues(horizontal = 16.dp, vertical = 6.dp),
@@ -375,15 +355,9 @@ fun CameraScannerScreen(
                     )
                     Spacer(modifier = Modifier.height(18.dp))
                     Text(
-                        text = "Running On-Device Machine Learning...",
+                        text = "Identifying species...",
                         style = MaterialTheme.typography.titleLarge,
                         color = Color.White
-                    )
-                    Spacer(modifier = Modifier.height(6.dp))
-                    Text(
-                        text = "Model: ${selectedMode.label} (${selectedMode.subtitle})",
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = primaryColor
                     )
                 }
             }
