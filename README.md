@@ -24,15 +24,16 @@ Captures identified as screens or prints are flagged with an unverified notice a
 Instead of relying on a single generic model, AnimDex employs specialized vision models trained on biodiversity datasets:
 
 ```
-                              [ Camera Frame ]
-                                      │
+                               [ Camera Frame ]
+                                       │
                  ┌────────────────────┴────────────────────┐
                  │                                         │
         [ Manual Mode Selection ]                 [ Auto-Cascade Mode ]
                  │                                         │
    ┌─────────────┼─────────────┐                           ▼
    ▼             ▼             ▼                [ General Fauna Model ]
-[ Birds ]   [ Insects ]   [ General ]                      │
+[ Birds ]   [ Insects ]   [ General ]               (1,443 species)
+   │             │             │                           │
    │             │             │            ┌──────────────┼──────────────┐
    │             │             │            ▼              ▼              ▼
    │             │             │       [ Inanimate ]    [ Bird? ]     [ Insect? ]
@@ -41,8 +42,8 @@ Instead of relying on a single generic model, AnimDex employs specialized vision
    │             │             │      (Filter Non-Fauna)   │              │
    │             │             │                           ▼              ▼
    ▼             ▼             ▼                    [ iNat Birds ]  [ iNat Insects ]
-[ iNat Birds ] [ iNat Insects] [ General ]                 │              │
-(965 species) (1,022 species) (Fauna & Wildlife)           ▼              ▼
+[ iNat Birds ] [ iNat Insects] [ General Fauna ]           │              │
+(965 species) (1,022 species) (1,443 species)              ▼              ▼
    │             │             │                    Fine-Grained Species & Binomial
    └─────────────┬─────────────┘                           │
                  ▼                                         │
@@ -54,30 +55,34 @@ Instead of relying on a single generic model, AnimDex employs specialized vision
 
 ### Bundled On-Device Models (`app/src/main/assets/`)
 
+- **General Fauna Model (`animal_classifier.tflite`)**:
+  - Custom-trained on **1,443 living animal species** across Kingdom Animalia (Mammals, Reptiles, Amphibians, Ray-finned Fishes, Mollusks, and domestic fauna).
+  - Optimized with dynamic range INT8 quantization to an ultra-compact **4.25 MB** footprint.
+  - Bundled with TensorFlow Lite Task Vision metadata and input normalization (`mean=[127.5], std=[127.5]`) for instant on-device execution.
+  - Features bidirectional taxonomic parsing (handling both `Common Name (Binomial)` and `Binomial (Common Name)`).
 - **Specialized Bird Model (`bird_classifier.tflite`)**:
   - Trained on iNaturalist Birds.
   - Identifies 965 avian species with common names and binomial scientific nomenclature (e.g., *Cyanocitta cristata* - Blue Jay).
 - **Specialized Insect & Arthropod Model (`insect_classifier.tflite`)**:
   - Trained on iNaturalist Insects.
   - Identifies 1,022 invertebrate species including butterflies, beetles, dragonflies, bees, and spiders (e.g., *Danaus plexippus* - Monarch).
-- **General Fauna Model (`animal_classifier.tflite`)**:
-  - Identifies mammals, reptiles, amphibians, fish, and general wildlife.
-  - Detects non-animal objects to filter out false-positive identifications.
+- **Intelligent Auto-Ensemble Cascade**:
+  - Combines all three expert models to provide offline recognition of **over 3,430 living wildlife species**.
+  - General fauna model acts as the primary triage filter: guards domestic animals and wild fauna against out-of-distribution hallucinations, while seamlessly routing bird and insect detections to the dedicated iNaturalist models.
 
 ---
 
 ## Scanner Controls & Modes
 
-- **Auto Mode**:
-  - Inspects the scene using the general fauna classifier.
-  - Inanimate objects trigger an informational warning without guessing an animal.
-  - Avian or invertebrate subjects automatically cascade into dedicated iNaturalist models for fine-grained identification.
-- **Birds Mode**:
-  - Routes directly to the 965-species bird classifier.
-- **Insects Mode**:
-  - Routes directly to the 1,022-species insect and arthropod classifier.
-- **General Wildlife Mode**:
-  - Routes to the fauna classifier covering mammals, reptiles, amphibians, and fish.
+- **Auto-Ensemble Mode (`⚡`)**:
+  - High-precision multi-expert cascade covering 3,430+ species.
+  - Automatically identifies general fauna, routes birds and insects to specialized deep classifiers, and guards against non-animal artifacts.
+- **General Fauna Mode (`🐾`)**:
+  - Directly queries the 1,443-species living fauna classifier covering mammals, reptiles, amphibians, fishes, and domestic animals.
+- **Birds Mode (`🪶`)**:
+  - Routes directly to the 965-species iNaturalist avian classifier.
+- **Insects & Bugs Mode (`🦋`)**:
+  - Routes directly to the 1,022-species iNaturalist insect and arthropod classifier.
 
 ---
 
