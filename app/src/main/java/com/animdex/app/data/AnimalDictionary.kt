@@ -38,12 +38,25 @@ object AnimalDictionary {
         val closeParenIndex = trimmed.lastIndexOf(')')
 
         return if (parenIndex != -1 && closeParenIndex > parenIndex) {
-            val scientific = trimmed.substring(0, parenIndex).trim()
-            val common = trimmed.substring(parenIndex + 1, closeParenIndex).trim()
-            ParsedSpecies(
-                displayName = common.ifEmpty { scientific },
-                scientificName = scientific
-            )
+            val part1 = trimmed.substring(0, parenIndex).trim()
+            val part2 = trimmed.substring(parenIndex + 1, closeParenIndex).trim()
+
+            val p2Words = part2.split(" ")
+            val isPart2Binomial = p2Words.size == 2 &&
+                p2Words[0].firstOrNull()?.isUpperCase() == true &&
+                p2Words[1].firstOrNull()?.isLowerCase() == true
+
+            if (isPart2Binomial) {
+                ParsedSpecies(
+                    displayName = part1.ifEmpty { part2 },
+                    scientificName = part2
+                )
+            } else {
+                ParsedSpecies(
+                    displayName = part2.ifEmpty { part1 },
+                    scientificName = part1
+                )
+            }
         } else {
             val clean = trimmed.lowercase().replace('_', ' ').trim()
             val formatted = clean.split(" ").joinToString(" ") { word ->

@@ -17,10 +17,10 @@ enum class ClassifierMode(
     val emoji: String,
     val subtitle: String
 ) {
-    AUTO("Auto-Ensemble", R.drawable.ic_auto_mode, "⚡", "Intelligent multi-model cascade"),
+    AUTO("Auto-Ensemble", R.drawable.ic_auto_mode, "⚡", "Intelligent multi-expert cascade (3,430+ species)"),
     BIRDS("Birds", R.drawable.ic_bird, "🪶", "iNaturalist (965 species)"),
     INSECTS("Insects & Bugs", R.drawable.ic_butterfly, "🦋", "iNaturalist (1,022 species)"),
-    GENERAL("General Wildlife", R.drawable.ic_paw, "🐾", "Mammals, reptiles & fauna")
+    GENERAL("General Fauna", R.drawable.ic_paw, "🐾", "Living Fauna (1,443 species)")
 }
 
 data class RecognitionResult(
@@ -162,7 +162,7 @@ class AnimalClassifier(private val context: Context) {
                             group = info.group,
                             isAnimal = info.isAnimal,
                             confidence = cat.score,
-                            modelSource = "General Fauna Model",
+                            modelSource = "General Fauna Model (1,443 species)",
                             funFact = info.funFact
                         )
                     )
