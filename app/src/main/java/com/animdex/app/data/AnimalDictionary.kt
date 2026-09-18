@@ -172,7 +172,24 @@ object AnimalDictionary {
         "hen" to Pair("Hen / Chicken", "Gallus gallus domesticus"),
         "tusker" to Pair("Wild Elephant", "Loxodonta / Elephas"),
         "african hunting dog" to Pair("African Wild Dog", "Lycaon pictus"),
-        "hyena" to Pair("Spotted Hyena", "Crocuta crocuta")
+        "hyena" to Pair("Spotted Hyena", "Crocuta crocuta"),
+        "cat" to Pair("Cat", "Felis catus"),
+        "cow" to Pair("Domestic Cattle / Cow", "Bos taurus"),
+        "sparrow" to Pair("Songbird / Sparrow", "Passeridae"),
+        "lizard" to Pair("Lizard", "Lacertilia"),
+        "toad" to Pair("Toad / Frog", "Bufonidae"),
+        "woodpecker" to Pair("Woodpecker", "Picidae"),
+        "owl" to Pair("Owl", "Strigiformes"),
+        "pigeon" to Pair("Pigeon / Dove", "Columbidae"),
+        "crow" to Pair("Crow / Raven", "Corvus"),
+        "eagle" to Pair("Eagle", "Accipitridae"),
+        "duck" to Pair("Duck", "Anatidae"),
+        "swan" to Pair("Swan", "Cygnus"),
+        "parrot" to Pair("Parrot", "Psittaciformes"),
+        "hummingbird" to Pair("Hummingbird", "Trochilidae"),
+        "snake" to Pair("Snake", "Serpentes"),
+        "turtle" to Pair("Turtle / Tortoise", "Testudines"),
+        "dog" to Pair("Domestic Dog", "Canis lupus familiaris")
     )
 
     fun getInfoForGeneralModel(index: Int, rawLabel: String): AnimalInfo {
@@ -183,7 +200,7 @@ object AnimalDictionary {
         val finalDisplayName = mapped?.first ?: parsed.displayName
         val finalScientificName = mapped?.second ?: parsed.scientificName
 
-        val group = detectGeneralGroup(index, clean)
+        val group = detectGeneralGroup(clean)
         val isAnimal = group.isAnimal
         val funFact = getFact(clean, group)
 
@@ -196,16 +213,49 @@ object AnimalDictionary {
         )
     }
 
-    private fun detectGeneralGroup(index: Int, label: String): AnimalGroup {
+    private fun detectGeneralGroup(label: String): AnimalGroup {
+        val l = label.lowercase()
         return when {
-            index <= 0 || index > 398 -> AnimalGroup.NOT_ANIMAL
-            (index in 1..7) || (index in 390..398) -> AnimalGroup.FISH
-            (index in 8..25) || (index in 81..101) || (index in 128..147) -> AnimalGroup.BIRD
-            index in 26..33 -> AnimalGroup.AMPHIBIAN
-            index in 34..69 -> AnimalGroup.REPTILE
-            (index in 70..80) || (index in 108..127) || (index in 301..330) -> AnimalGroup.INVERTEBRATE
-            (index in 102..107) || (index in 148..300) || (index in 331..389) -> AnimalGroup.MAMMAL
-            else -> AnimalGroup.NOT_ANIMAL
+            // Inanimate objects / screens / furniture
+            l.contains("screen") || l.contains("monitor") || l.contains("laptop") ||
+            l.contains("television") || l.contains("phone") || l.contains("desk") ||
+            l.contains("chair") || l.contains("table") || l.contains("car") ||
+            l.contains("vehicle") || l.contains("bottle") || l.contains("cup") ||
+            l.contains("keyboard") || l.contains("book") -> AnimalGroup.NOT_ANIMAL
+
+            // Birds
+            l.contains("bird") || l.contains("sparrow") || l.contains("woodpecker") ||
+            l.contains("owl") || l.contains("pigeon") || l.contains("crow") ||
+            l.contains("eagle") || l.contains("duck") || l.contains("swan") ||
+            l.contains("parrot") || l.contains("hummingbird") || l.contains("goose") ||
+            l.contains("flamingo") || l.contains("hornbill") || l.contains("penguin") ||
+            l.contains("sandpiper") || l.contains("turkey") || l.contains("pelecaniformes") ||
+            l.contains("cock") || l.contains("hen") || l.contains("finch") || l.contains("robin") -> AnimalGroup.BIRD
+
+            // Reptiles
+            l.contains("lizard") || l.contains("chameleon") || l.contains("snake") ||
+            l.contains("turtle") || l.contains("tortoise") || l.contains("alligator") ||
+            l.contains("crocodile") || l.contains("iguana") || l.contains("gecko") -> AnimalGroup.REPTILE
+
+            // Amphibians
+            l.contains("toad") || l.contains("frog") || l.contains("salamander") -> AnimalGroup.AMPHIBIAN
+
+            // Fish
+            l.contains("fish") || l.contains("goldfish") || l.contains("shark") ||
+            l.contains("seahorse") -> AnimalGroup.FISH
+
+            // Invertebrates & Insects
+            l.contains("bee") || l.contains("beetle") || l.contains("butterfly") ||
+            l.contains("caterpillar") || l.contains("cockroach") || l.contains("crab") ||
+            l.contains("dragonfly") || l.contains("fly") || l.contains("grasshopper") ||
+            l.contains("jellyfish") || l.contains("ladybug") || l.contains("lobster") ||
+            l.contains("mosquito") || l.contains("moth") || l.contains("octopus") ||
+            l.contains("oyster") || l.contains("spider") || l.contains("squid") ||
+            l.contains("starfish") || l.contains("insect") || l.contains("worm") ||
+            l.contains("ant") || l.contains("wasp") -> AnimalGroup.INVERTEBRATE
+
+            // Mammals (Default for all other wildlife & pets)
+            else -> AnimalGroup.MAMMAL
         }
     }
 
